@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arbitre Handball</title>
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤾</text></svg>">
-    
-    <!-- Lien vers le manifeste de l'application web (chemin absolu pour GitHub Pages) -->
+        <!-- Favicon  -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤾</text></svg>">
     <link rel="manifest" href="/carton-arbitre-hand/manifest.json">
-    
     <!-- Méta-balises pour le comportement PWA sur mobile -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -818,16 +815,6 @@
         </div>
     </div>
 
-    <!-- Message Modal (replaces alert()) -->
-    <div class="modal" id="messageModal">
-        <div class="modal-content">
-            <span id="closeMessageModalBtn" class="close-button">&times;</span>
-            <h2 id="messageModalTitle">Message</h2>
-            <p id="messageText" style="text-align: center; margin-bottom: 20px; font-size: 1.1em;"></p>
-            <button id="okMessageModalBtn" class="btn btn-success">OK</button>
-        </div>
-    </div>
-
     <script>
         // =========================================================
         // 1. Game State Management
@@ -854,7 +841,6 @@
 
         let timerInterval;
         let timeOutInterval;
-        let wakeLock = null; // Variable pour stocker le Wake Lock
 
         // =========================================================
         // 2. Utility Functions
@@ -871,10 +857,12 @@
             }
         }
 
+        // function playSound() { /* Removed as per user request */ } 
+
         function rgbToHex(rgb) {
             if (!rgb || rgb.indexOf('rgb') === -1) return rgb; 
             const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            if (!rgbMatch) return rgb; // Return the original rgb string if it's already invalid
+            if (!rgbMatch) return rgbMatch[0]; // Return the original rgb string if it's already invalid
             const hex = (x) => ("0" + parseInt(x).toString(16)).slice(-2);
             return "#" + hex(rgbMatch[1]) + hex(rgbMatch[2]) + hex(rgbMatch[3]);
         }
@@ -979,7 +967,7 @@
                     gameState.breakTimer = 0;
                     gameState.mainTimer = 0; // Main timer resets for new period
                     vibrate(200);
-                    addToJournal(`Début de la ${(gameState.period + 1) / 2 - 1}ème période`);
+                    addToJournal(`Début de la ${(gameState.period + 1) / 2}ème période`);
                     pauseTimer(); // Pause the timer for manual restart of the next period
                 }
             } else { // It's a playing period (odd period number)
@@ -1078,6 +1066,7 @@
                             if (!excl.isCompleted) { 
                                 excl.isCompleted = true; 
                                 excl.returnedDisplayTimestamp = gameState.globalGameTime; // Use globalGameTime here
+                                // playSound(); // Re-enable if sounds are added back
                                 vibrate(150);
                                 const teamName = document.getElementById(`team${tIndex + 1}Name`).textContent;
                                 addToJournal(`${teamName} - Joueur ${excl.player} : Exclusion terminée`); // Use actual team name
@@ -1225,12 +1214,12 @@
 
         function requestTimeOut(teamId) {
             if (gameState.isTimeOutActive) {
-                showMessage("Attention", "Un temps mort est déjà en cours."); // Replaced alert()
+                alert("Un temps mort est déjà en cours.");
                 return;
             }
             const teamData = teamId === 1 ? gameState.team1 : gameState.team2;
             if (teamData.timeOutsTaken >= 3) {
-                showMessage("Attention", `L'équipe ${document.getElementById(`team${teamId}Name`).textContent} a déjà utilisé tous ses temps morts.`); // Replaced alert()
+                alert(`L'équipe ${document.getElementById(`team${teamId}Name`).textContent} a déjà utilisé tous ses temps morts.`);
                 return;
             }
 
@@ -1262,7 +1251,7 @@
         function giveYellowCard() {
             const playerNum = document.getElementById('playerNumber').value;
             if (!playerNum) {
-                showMessage("Erreur", 'Veuillez saisir un numéro de joueur'); // Replaced alert()
+                alert('Veuillez saisir un numéro de joueur');
                 return;
             }
 
@@ -1275,7 +1264,7 @@
             }
 
             if (teamData.players[playerNum].yellow) {
-                showMessage("Attention", 'Ce joueur a déjà un carton jaune'); // Replaced alert()
+                alert('Ce joueur a déjà un carton jaune');
                 closeModal(); 
                 return;
             }
@@ -1290,7 +1279,7 @@
         function giveRedCard() {
             const playerNum = document.getElementById('playerNumber').value;
             if (!playerNum) {
-                showMessage("Erreur", 'Veuillez saisir un numéro de joueur'); // Replaced alert()
+                alert('Veuillez saisir un numéro de joueur');
                 return;
             }
 
@@ -1303,7 +1292,7 @@
             }
 
             if (teamData.players[playerNum].red) {
-                showMessage("Attention", 'Ce joueur a déjà un carton rouge'); // Replaced alert()
+                alert('Ce joueur a déjà un carton rouge');
                 closeModal(); 
                 return;
             }
@@ -1353,7 +1342,7 @@
         function giveBlueCard() {
             const playerNum = document.getElementById('playerNumber').value;
             if (!playerNum) {
-                showMessage("Erreur", 'Veuillez saisir un numéro de joueur'); // Replaced alert()
+                alert('Veuillez saisir un numéro de joueur');
                 return;
             }
 
@@ -1366,7 +1355,7 @@
 
             // A blue card implies a red card if not already given
             if (!teamData.players[playerNum].red) {
-                showMessage("Attention", `Le joueur ${playerNum} n'avait pas de carton rouge. Un carton rouge sera automatiquement attribué avant le carton bleu.`); // Replaced alert()
+                alert(`Le joueur ${playerNum} n'avait pas de carton rouge. Un carton rouge sera automatiquement attribué avant le carton bleu.`);
                 giveRedCard(); // Call red card function, which handles the 2min exclusion and journal entry
                 // Re-fetch player data after red card might have updated it
                 if (!teamData.players[playerNum]) { // Re-check in case redCard closed modal
@@ -1375,7 +1364,7 @@
             }
 
             if (teamData.players[playerNum].blue) {
-                showMessage("Attention", 'Ce joueur a déjà un carton bleu.'); // Replaced alert()
+                alert('Ce joueur a déjà un carton bleu.');
                 closeModal();
                 return;
             }
@@ -1391,7 +1380,7 @@
         function giveExclusion() {
             const playerNum = document.getElementById('playerNumber').value;
             if (!playerNum) {
-                showMessage("Erreur", 'Veuillez saisir un numéro de joueur'); // Replaced alert()
+                alert('Veuillez saisir un numéro de joueur');
                 return;
             }
 
@@ -1403,13 +1392,13 @@
             }
 
             if (teamData.players[playerNum].red || teamData.players[playerNum].blue) { // Check for blue card too
-                showMessage("Attention", 'Ce joueur a un carton rouge ou bleu et est déjà exclu définitivement.'); // Replaced alert()
+                alert('Ce joueur a un carton rouge ou bleu et est déjà exclu définitivement.');
                 closeModal(); 
                 return;
             }
 
             if (teamData.players[playerNum].exclusions >= 2) { 
-                showMessage("Attention", `Le joueur ${playerNum} de l'${teamName} reçoit sa 3ème exclusion et un carton rouge !`); // Replaced alert()
+                alert(`Le joueur ${playerNum} de l'${teamName} reçoit sa 3ème exclusion et un carton rouge !`);
                 teamData.players[playerNum].red = true;
                 // Mark any active 2-min exclusions for this player as completed
                 for (let i = 0; i < teamData.exclusions.length; i++) {
@@ -1434,7 +1423,7 @@
             }
 
             if (slotIndex === -1) {
-                showMessage("Attention", 'Toutes les exclusions sont déjà en cours pour cette équipe. (Max 3 actives simultanément)'); // Replaced alert()
+                alert('Toutes les exclusions sont déjà en cours pour cette équipe. (Max 3 actives simultanément)');
                 closeModal(); 
                 return;
             }
@@ -1494,18 +1483,6 @@
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.style.display = 'none';
             });
-        }
-
-        // Nouvelle fonction pour afficher un message personnalisé (remplace alert())
-        function showMessage(title, message) {
-            document.getElementById('messageModalTitle').textContent = title;
-            document.getElementById('messageText').textContent = message;
-            document.getElementById('messageModal').style.display = 'flex';
-        }
-
-        // Nouvelle fonction pour fermer la modal de message
-        function closeMessageModal() {
-            document.getElementById('messageModal').style.display = 'none';
         }
 
         // =========================================================
@@ -1621,10 +1598,10 @@
                         updateDisplay(); // Update display immediately after adjustment
                     }
                 } else {
-                    showMessage('Erreur de format', 'Format de temps principal invalide (MM:SS, secondes entre 0 et 59). Le temps n\'a pas été modifié.'); // Replaced alert()
+                    alert('Format de temps principal invalide (MM:SS, secondes entre 0 et 59). Le temps n\'a pas été modifié.');
                 }
             } else {
-                showMessage('Erreur de format', 'Format de temps principal invalide (MM:SS). Le temps n\'a pas été modifié.'); // Replaced alert()
+                alert('Format de temps principal invalide (MM:SS). Le temps n\'a pas été modifié.');
             }
             
             closeModal();
@@ -1656,7 +1633,7 @@
             a.click();
             URL.revokeObjectURL(url);
             
-            showMessage('Succès', 'Journal sauvegardé avec succès !'); // Replaced alert()
+            alert('Journal sauvegardé avec succès !');
         }
 
         // =========================================================
@@ -1668,8 +1645,8 @@
             document.getElementById('overlayTimerDisplay').addEventListener('click', () => {
                 // Allows interrupting pause by clicking the overlay (only if it's a break and not a timeout)
                 if (gameState.period % 2 === 0 && !gameState.isTimeOutActive && gameState.period < (2 * gameState.numberOfPeriods)) {
-                    // Utilisation de la modal showMessage pour la confirmation
-                    showMessage('Confirmation', 'Es-tu sûr de vouloir interrompre la pause et démarrer la prochaine période ?', () => {
+                    const confirmInterruption = confirm("Es-tu sûr de vouloir interrompre la pause et démarrer la prochaine période ?");
+                    if (confirmInterruption) {
                         gameState.period++; // Move to next playing period
                         gameState.breakTimer = 0; 
                         gameState.mainTimer = 0; 
@@ -1678,15 +1655,17 @@
                         vibrate(200);
                         addToJournal(`Pause interrompue - Début de la ${(gameState.period + 1) / 2}ème période`);
                         updateDisplay();
-                    }, true); // Le 'true' indique qu'il s'agit d'une confirmation avec un bouton "Oui"
+                    }
                 } else if (gameState.isTimeOutActive) { // Handle Time Out interruption
-                    showMessage('Confirmation', 'Es-tu sûr de vouloir interrompre le temps mort ?', () => {
+                    const confirmInterruption = confirm("Es-tu sûr de vouloir interrompre le temps mort ?");
+                    if (confirmInterruption) {
                         clearInterval(timeOutInterval);
                         gameState.isTimeOutActive = false;
                         vibrate(150);
                         addToJournal('Temps mort interrompu manuellement.'); // Journal entry for manual interruption
+                        // REMOVED: startTimer(); // Main timer must be resumed manually
                         updateDisplay();
-                    }, true); // Le 'true' indique qu'il s'agit d'une confirmation
+                    }
                 }
             });
 
@@ -1733,15 +1712,10 @@
             document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
             document.getElementById('closeSettingsModalBtn').addEventListener('click', closeModal);
 
-            // Message Modal Buttons
-            document.getElementById('okMessageModalBtn').addEventListener('click', closeMessageModal);
-            document.getElementById('closeMessageModalBtn').addEventListener('click', closeMessageModal);
-
             // Close modals when clicking outside
             window.addEventListener('click', (e) => {
                 if (e.target.classList.contains('modal')) {
-                    closeModal(); // This will close settings, player, journal, and reset modals
-                    closeMessageModal(); // Explicitly close the message modal
+                    closeModal();
                 }
             });
         }
@@ -1750,66 +1724,22 @@
         // 10. Initialization on DOM Load & PWA Registration (NEW)
         // =========================================================
         document.addEventListener('DOMContentLoaded', () => {
-            initializeApp(); // Call initialization function here
             initEventListeners();
-
-            // 11. Verrouillage de l'orientation en paysage (NEW)
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape')
-                    .then(() => console.log('Orientation verrouillée en paysage.'))
-                    .catch(err => console.warn('Échec du verrouillage de l\'orientation:', err));
-            } else if (screen.lockOrientation) { // Ancienne API pour compatibilité
-                screen.lockOrientation('landscape');
-                console.log('Orientation verrouillée en paysage (ancienne API).');
-            } else {
-                console.warn('API de verrouillage d\'orientation non supportée.');
-            }
-
-            // 12. Demande de Wake Lock (Blocage de la mise en veille) (NEW)
-            const requestWakeLock = async () => {
-                if ('wakeLock' in navigator) {
-                    try {
-                        wakeLock = await navigator.wakeLock.request('screen');
-                        console.log('Wake Lock activé !');
-                        wakeLock.addEventListener('release', () => {
-                            console.log('Wake Lock relâché.');
-                        });
-                    } catch (err) {
-                        console.warn('Échec de l\'activation du Wake Lock:', err);
-                    }
-                } else {
-                    console.warn('API Wake Lock non supportée.');
-                }
-            };
-
-            // Tente de demander le wake lock au démarrage (peut nécessiter une interaction utilisateur)
-            // Ou tu peux lier requestWakeLock à un bouton ou au démarrage du timer
-            requestWakeLock(); 
-
-            // Gérer la perte de visibilité de l'onglet/application pour réactiver le wake lock si nécessaire
-            document.addEventListener('visibilitychange', async () => {
-                if (wakeLock !== null && document.visibilityState === 'visible') {
-                    await requestWakeLock();
-                }
-            });
-
+            updateTeamColorsDisplay(); 
+            addToJournal('Début du match'); 
+            updateDisplay();
 
             // PWA Service Worker Registration
-            console.log("Tentative d'enregistrement du Service Worker..."); // Ajout d'un log pour le suivi
             if ('serviceWorker' in navigator) {
-                try {
-                    // Enregistrement du Service Worker avec le chemin absolu corrigé pour GitHub Pages
-                    // Le scope doit correspondre au chemin de base de ton application sur GitHub Pages
-                    navigator.serviceWorker.register('/carton-arbitre-hand/service-worker.js', { scope: '/carton-arbitre-hand/' })
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js')
                         .then(registration => {
                             console.log('Service Worker enregistré avec succès:', registration.scope);
                         })
                         .catch(error => {
-                            console.error('Échec de l\\'enregistrement du Service Worker (catch) :', error);
+                            console.log('Échec de l\'enregistrement du Service Worker:', error);
                         });
-                } catch (e) {
-                    console.error('Erreur synchrone lors de l\\'appel à register() :', e);
-                }
+                });
             }
         });
     </script>
