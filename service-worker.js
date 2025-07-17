@@ -1,6 +1,6 @@
 const CACHE_NAME = 'handball-referee-cache-v1';
 const urlsToCache = [
-  './arbitre hand v3.html', // Ton fichier HTML principal
+  './index.html', // Ton fichier HTML principal
   './style.css', // Si tu as un fichier CSS externe
   './script.js', // Si tu as un fichier JS externe
   '/icons/icon-192x192.png',
