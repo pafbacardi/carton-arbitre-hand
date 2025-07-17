@@ -1,12 +1,11 @@
-const CACHE_NAME = 'handball-referee-cache-v1';
+const CACHE_NAME = 'handball-referee-cache-v2'; // J'ai incrémenté la version du cache
 const urlsToCache = [
+  './', // Sert à cacher la page racine (index.html par défaut si "start_url": "./")
   './index.html', // Ton fichier HTML principal
-  './style.css', // Si tu as un fichier CSS externe
-  './script.js', // Si tu as un fichier JS externe
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
-  // Ajoute ici toutes les autres ressources que ton application utilise
-  // (par exemple, d'autres images, polices, etc.)
+  //'./manifest.json', // Le manifeste lui-même
+  //'/icons/icon-192x192.png', // L'icône de 192x192 pixels
+  //'/icons/icon-512x512.png'  // L'icône de 512x512 pixels
+  // Plus aucune référence à style.css ou script.js car ils sont intégrés
 ];
 
 self.addEventListener('install', (event) => {
