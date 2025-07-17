@@ -406,6 +406,16 @@
         </div>
     </div>
 
+    <!-- Message Modal (replaces alert()) -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span id="closeMessageModalBtn" class="close-button">&times;</span>
+            <h2 id="messageModalTitle">Message</h2>
+            <p id="messageText" style="text-align: center; margin-bottom: 20px; font-size: 1.1em;"></p>
+            <button id="okMessageModalBtn" class="btn btn-green">OK</button>
+        </div>
+    </div>
+
     <script>
         // =========================================================
         // 1. Core Variables
@@ -459,6 +469,14 @@
         const saveSettingsBtn = document.getElementById('saveSettingsBtn');
         const closeSettingsModalBtn = document.getElementById('closeSettingsModalBtn');
 
+        // Nouveaux éléments DOM pour la modal de message
+        const messageModal = document.getElementById('messageModal');
+        const messageModalTitle = document.getElementById('messageModalTitle');
+        const messageText = document.getElementById('messageText');
+        const closeMessageModalBtn = document.getElementById('closeMessageModalBtn');
+        const okMessageModalBtn = document.getElementById('okMessageModalBtn');
+
+
         // =========================================================
         // 3. Timer Functions
         // =========================================================
@@ -480,7 +498,8 @@
                         updateTimerDisplay();
                     } else {
                         pauseTimer();
-                        alert(`Fin de la Période ${currentPeriod}!`);
+                        // Remplacé alert() par showMessage()
+                        showMessage('Fin de Période', `Fin de la Période ${currentPeriod}!`);
                         addToJournal(`Fin de la Période ${currentPeriod}`);
                     }
                 }, 1000);
@@ -519,7 +538,8 @@
                 addToJournal(`Début de la Période ${currentPeriod}`);
                 startTimer(); // Optionally start timer for new period automatically
             } else {
-                alert('Fin du match!');
+                // Remplacé alert() par showMessage()
+                showMessage('Fin du Match', 'Fin du match!');
                 addToJournal('Fin du match');
                 // Optionally reset match or prompt for new game
             }
@@ -573,6 +593,18 @@
         function closeModal() {
             settingsModal.style.display = 'none';
             journalSection.style.display = 'none'; // Also close journal if open
+        }
+
+        // Nouvelle fonction pour afficher un message personnalisé
+        function showMessage(title, message) {
+            messageModalTitle.textContent = title;
+            messageText.textContent = message;
+            messageModal.style.display = 'flex';
+        }
+
+        // Nouvelle fonction pour fermer la modal de message
+        function closeMessageModal() {
+            messageModal.style.display = 'none';
         }
 
         function saveSettings() {
@@ -664,11 +696,14 @@
             // Modal specific listeners
             saveSettingsBtn.addEventListener('click', saveSettings);
             closeSettingsModalBtn.addEventListener('click', closeModal);
+            okMessageModalBtn.addEventListener('click', closeMessageModal); // Listener pour le bouton OK de la modal de message
+            closeMessageModalBtn.addEventListener('click', closeMessageModal); // Listener pour la croix de la modal de message
 
             // Close modals when clicking outside
             window.addEventListener('click', (e) => {
                 if (e.target.classList.contains('modal')) {
-                    closeModal();
+                    closeModal(); // Ferme la modal de paramètres
+                    closeMessageModal(); // Ferme la modal de message
                 }
             });
         }
@@ -684,7 +719,7 @@
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     // Enregistrement du Service Worker avec le chemin relatif corrigé
-                    navigator.serviceWorker.register('./service-worker.js')
+                    navigator.serviceWorker.register('./service-worker.js', { scope: './' }) // Ajout du scope explicite
                         .then(registration => {
                             console.log('Service Worker enregistré avec succès:', registration.scope);
                         })
