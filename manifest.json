@@ -5,6 +5,7 @@
   "start_url": "/carton-arbitre-hand/index.html",
   "scope": "/carton-arbitre-hand/",
   "display": "standalone",
+  "orientation": "landscape", // Ajoute cette ligne
   "background_color": "#1a1a1a",
   "theme_color": "#FFD700",
   "icons": [
