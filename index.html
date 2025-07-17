@@ -1719,6 +1719,30 @@
                 }
             });
         }
+        let wakeLock = null; // Variable pour stocker le Wake Lock
+
+        // Fonction pour demander un Wake Lock
+        const requestWakeLock = async () => {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Wake Lock écran activé.');
+                    wakeLock.addEventListener('release', () => {
+                        console.log('Wake Lock écran relâché.');
+                    });
+                } catch (err) {
+                    console.error(`Erreur de Wake Lock: ${err.name}, ${err.message}`);
+                }
+            }
+        };
+
+        // Fonction pour relâcher le Wake Lock
+        const releaseWakeLock = () => {
+            if (wakeLock !== null) {
+                wakeLock.release();
+                wakeLock = null;
+            }
+        };
 
         // =========================================================
         // 10. Initialization on DOM Load & PWA Registration (NEW)
@@ -1735,13 +1759,28 @@
                     navigator.serviceWorker.register('/service-worker.js')
                         .then(registration => {
                             console.log('Service Worker enregistré avec succès:', registration.scope);
+                            // Demander le Wake Lock une fois le Service Worker enregistré et la page chargée
+                            requestWakeLock(); 
                         })
                         .catch(error => {
                             console.log('Échec de l\'enregistrement du Service Worker:', error);
                         });
                 });
             }
+
+            // Gérer le Wake Lock si la visibilité de la page change (l'utilisateur quitte/revient à l'appli)
+            document.addEventListener('visibilitychange', () => {
+                if (wakeLock !== null && document.visibilityState === 'visible') {
+                    requestWakeLock(); // Redemander le Wake Lock si on revient sur la page
+                }
+            });
         });
+
+        // Optionnel : Relâcher le Wake Lock avant de quitter la page (bien que l'OS le fasse généralement)
+        window.addEventListener('beforeunload', () => {
+            releaseWakeLock();
+        });
+
     </script>
 </body>
 </html>
