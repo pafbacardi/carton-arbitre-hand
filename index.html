@@ -7,7 +7,7 @@
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤾</text></svg>">
     
-    <!-- Lien vers le manifeste de l'application web (CHEMIN ABSOLU CORRIGÉ pour GitHub Pages) -->
+    <!-- Lien vers le manifeste de l'application web (chemin absolu pour GitHub Pages) -->
     <link rel="manifest" href="/carton-arbitre-hand/manifest.json">
     
     <!-- Méta-balises pour le comportement PWA sur mobile -->
@@ -716,7 +716,8 @@
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     // Enregistrement du Service Worker avec le chemin absolu corrigé pour GitHub Pages
-                    navigator.serviceWorker.register('/carton-arbitre-hand/service-worker.js', { scope: '/carton-arbitre-hand/' }) // Ajout du scope explicite
+                    // Le scope doit correspondre au chemin de base de ton application sur GitHub Pages
+                    navigator.serviceWorker.register('/carton-arbitre-hand/service-worker.js', { scope: '/carton-arbitre-hand/' })
                         .then(registration => {
                             console.log('Service Worker enregistré avec succès:', registration.scope);
                         })
