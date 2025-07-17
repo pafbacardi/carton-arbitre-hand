@@ -1,4 +1,4 @@
-const CACHE_NAME = 'handball-referee-cache-v6'; // Incrémente la version du cache pour s'assurer que les changements sont pris en compte
+const CACHE_NAME = 'handball-referee-cache-v7'; // Incrémente la version du cache pour s'assurer que les changements sont pris en compte
 const urlsToCache = [
   '/carton-arbitre-hand/', // La racine de ton application GitHub Pages
   '/carton-arbitre-hand/index.html',
