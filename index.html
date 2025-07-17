@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arbitre Handball</title>
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤾</text></svg>">
-    
-    <!-- Lien vers le manifeste de l'application web (chemin absolu pour GitHub Pages) -->
+        <!-- Favicon  -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤾</text></svg>">
     <link rel="manifest" href="/carton-arbitre-hand/manifest.json">
-    
     <!-- Méta-balises pour le comportement PWA sur mobile -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -30,677 +27,1695 @@
             overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
-        /* Le reste de ton CSS ... */
-
         .container {
             max-width: 100vw;
             padding: 10px;
-            min-height: 100vh;
+            min-height: 100vh; /* Ensure container takes full viewport height */
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
+            justify-content: space-between; /* Space out content vertically */
         }
 
-        .score-display, .period-display {
-            font-size: 8em; /* Adjusted for larger display */
-            font-weight: bold;
+        /* Timer Section */
+        .timer-section {
             text-align: center;
-            margin: 0px 0;
-            color: #FFD700; /* Gold color for scores */
-            width: 100%;
+            background: #2d2d2d;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            position: relative;
+            display: flex; /* Use flexbox to arrange items vertically */
+            flex-direction: column;
+            align-items: center; /* Center items horizontally */
+        }
+
+        .main-timer {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #00ff00; /* Default green */
+            margin-bottom: 8px;
+            text-shadow: 0 0 8px #00ff00;
+            cursor: pointer;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Overlay for Time Out / Pause - Now a banner within the flow */
+        #overlayTimerDisplay { 
+            /* Removed absolute positioning */
+            width: 100%; /* Take full width of parent */
+            background: rgba(0,0,0,0.8);
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem; /* Smaller font for banner */
+            font-weight: bold;
+            color: #ffc107;
+            z-index: 5;
+            text-shadow: 0 0 10px #ffc107;
+            cursor: pointer; /* Indicates it's clickable */
+            padding: 5px 10px; /* Padding for the banner */
+            border-radius: 4px; /* Slightly rounded corners */
+            margin-bottom: 10px; /* Space below the banner */
+        }
+
+        #overlayTimerDisplay.alert {
+            color: #dc3545;
+            text-shadow: 0 0 10px #dc3545;
+            animation: pulse-red 1s infinite;
+        }
+
+        #overlayTimerDisplay.pause-timer {
+            color: #007bff;
+            text-shadow: 0 0 10px #007bff;
+            animation: none;
+        }
+        
+        @keyframes pulse-red {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .period-info {
+            font-size: 1rem;
+            color: #ffd700;
+            margin-top: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* General Button Styles */
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 70px;
+        }
+
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-white { background: #ffffff; color: #1a1a1a; }
+        .btn-info { background: #17a2b8; color: white; } /* For Fullscreen/Blue Card */
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Teams Section */
+        .teams-section {
+            display: grid;
+            grid-template-columns: 1fr; /* Default: one column */
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-grow: 1; /* Allow teams section to take available space */
+        }
+
+        .team-card {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex; /* Use flexbox for internal layout */
+            flex-direction: column;
+            justify-content: space-between; /* Space out content inside card */
+        }
+
+        .team-blue { border-left: 4px solid #0066cc; }
+        .team-red { border-left: 4px solid #cc0000; }
+
+        .team-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .team-name:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Score Section */
+        .score-section { margin-bottom: 10px; }
+
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .score-controls {
             display: flex;
             justify-content: center;
-            align-items: center;
+            gap: 8px;
         }
 
-        .score-pair {
+        .score-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .team-actions {
             display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Sanctions Display */
+        .sanction-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 3px;
+            font-size: 0.9rem;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .card-player {
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-right: 4px;
+        }
+        
+        .yellow-card-player { background: #ffc107; color: black; }
+        .red-card-player { background: #dc3545; color: white; }
+        .blue-card-player { background: #007bff; color: white; } /* NEW: Blue card player style */
+        .excluded-player { background: #007bff; color: white; } /* Blue for players who have taken a 2min */
+
+        .time-outs {
+            margin-bottom: 3px;
+            font-size: 0.9rem;
+        }
+
+        .exclusions-list {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .exclusion-timer {
+            background: #cc0000;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            min-width: 55px;
+            margin-right: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .exclusion-timer.inactive {
+            background: #555;
+            opacity: 0.5;
+        }
+        
+        .exclusion-timer.completed-pulsing { 
+            background-color: #28a745; /* Green */
+            animation: pulse-green 1s infinite; 
+        }
+        
+        .exclusion-timer.returned { 
+            background-color: #28a745; 
+            color: white;
+            animation: none; 
+        }
+
+        @keyframes pulse-green {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            /* Allow scrolling for this section */
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.9rem;
+            min-width: 100px;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            justify-content: space-around; /* Distribute teams evenly */
-            gap: 10px; /* Space between scores */
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto; /* Allow scrolling within modals if content is too tall */
         }
 
-        .team-score {
-            flex-basis: 48%; /* Each score takes roughly half */
-            background-color: #333; /* Darker background for score boxes */
-            border-radius: 10px;
-            padding: 10px 0;
-            cursor: pointer;
-            position: relative; /* For the "goal" text animation */
-        }
-
-        .goal-text {
+        .modal-content {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 2em; /* Larger "Goal" text */
-            color: #4CAF50; /* Green for goal */
-            opacity: 0;
-            animation: fadeOutUp 1s forwards;
-        }
-
-        @keyframes fadeOutUp {
-            from {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
-            to {
-                opacity: 0;
-                transform: translate(-50%, -150%);
-            }
-        }
-
-        .period-display {
-            font-size: 3em;
-            margin-bottom: 0px;
-            color: #FFD700;
-        }
-
-        .team-names {
-            display: flex;
-            width: 100%;
-            justify-content: space-around;
-            margin-top: -15px; /* Pull names up closer to scores */
-            color: #AAA; /* Lighter grey for names */
-            font-size: 1.2em;
-        }
-
-        .team-name {
-            flex-basis: 48%;
-            text-align: center;
-            padding-bottom: 5px;
-        }
-
-        .timer-display {
-            font-size: 5em;
-            font-weight: bold;
-            color: #FFD700;
-            margin: 20px 0;
-            text-align: center;
-            width: 100%;
-        }
-
-        .controls {
-            display: flex;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
-            justify-content: center;
-            gap: 15px; /* Space between buttons */
-            width: 95%; /* Adjust width for better fit */
-            max-width: 600px; /* Max width for larger screens */
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            background-color: #007bff; /* Blue for primary actions */
-            color: white;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            flex-grow: 1; /* Allow buttons to grow */
-            min-width: 150px; /* Minimum width for buttons */
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-green { background-color: #28a745; } /* Green for positive actions */
-        .btn-green:hover { background-color: #218838; }
-
-        .btn-red { background-color: #dc3545; } /* Red for stop/reset */
-        .btn-red:hover { background-color: #c82333; }
-
-        .btn-secondary { background-color: #6c757d; } /* Grey for secondary actions */
-        .btn-secondary:hover { background-color: #5a6268; }
-
-        .btn-warning { background-color: #ffc107; color: #333;} /* Yellow for warning/settings */
-        btn-warning:hover { background-color: #e0a800; }
-
-        .btn-info { background-color: #17a2b8; } /* Light blue for info/journal */
-        .btn-info:hover { background-color: #138496; }
-
-        .btn-period { background-color: #6f42c1; } /* Purple for period changes */
-        .btn-period:hover { background-color: #563d7c; }
-
-        .journal-section {
-            background-color: #2a2a2a;
-            padding: 15px;
+            background: #2d2d2d;
+            padding: 20px;
             border-radius: 8px;
             width: 95%;
-            max-width: 600px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .journal-list {
-            list-style: none;
-            max-height: 200px;
-            overflow-y: auto;
-            border-bottom: 1px solid #444;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-
-        .journal-list li {
-            padding: 8px 0;
-            border-bottom: 1px dashed #3a3a3a;
-            font-size: 0.95em;
-            color: #CCC;
-        }
-
-        .journal-list li:last-child {
-            border-bottom: none;
-        }
-
-        .journal-input {
-            width: calc(100% - 110px); /* Adjust width for button */
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #555;
-            background-color: #333;
-            color: white;
-            font-size: 1em;
-            margin-right: 10px;
-        }
-
-        .add-journal-btn {
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1000; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: #2a2a2a;
-            margin: auto;
-            padding: 25px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            color: white;
-        }
-
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close-button:hover,
-        .close-button:focus {
-            color: #fff;
-            text-decoration: none;
-            cursor: pointer;
+            max-width: 350px;
+            text-align: center;
         }
 
         .modal h2 {
-            margin-top: 0;
-            color: #FFD700;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
             margin-bottom: 15px;
+            color: #ffd700;
+            font-size: 1.3rem;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
+        .player-input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: #1a1a1a;
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Journal Specific Styles */
+        .journal-entry {
+            background: #333;
+            padding: 8px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .journal-time {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        /* New: Style for colored team names in journal */
+        .journal-team-name {
             font-weight: bold;
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #555;
-            background-color: #333;
-            color: white;
-            font-size: 1em;
+        /* Reset Warning Modal */
+        .reset-warning {
+            background: #dc3545;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
         }
 
-        .modal .btn {
-            width: 100%;
-            margin-top: 20px;
+        .reset-warning h3 {
+            margin-bottom: 8px;
+            color: #ffd700;
+            font-size: 1.1rem;
         }
 
-        .team-color-picker {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
+        /* Media queries for true mobile portrait optimization */
+        @media (max-width: 575px) { /* Adjusted breakpoint for portrait */
+            .container { padding: 5px; }
+            .timer-section { padding: 10px; margin-bottom: 8px; }
+            .main-timer { font-size: 2.2rem; }
+            #overlayTimerDisplay { font-size: 1.2rem; padding: 4px 8px; margin-bottom: 5px; } /* Smaller font and padding for mobile banner */
+            .period-info { font-size: 0.9rem; }
+            .btn { padding: 8px 12px; font-size: 0.85rem; min-width: 60px; }
+            .team-card { padding: 10px; }
+            .team-name { font-size: 1rem; }
+            .score-display { font-size: 1.8rem; }
+            .score-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+            .sanction-line { font-size: 0.85rem; }
+            .card-player, .exclusion-timer { font-size: 0.75rem; padding: 2px 5px; margin-right: 3px; }
+            .exclusion-timer { min-width: 50px; }
+            .time-outs { font-size: 0.85rem; }
+            .team-actions .btn { min-width: 60px; font-size: 0.85rem; padding: 8px 10px; }
+            .bottom-nav { flex-direction: column; gap: 8px; }
+            .nav-btn { width: 100%; padding: 10px; font-size: 0.9rem; }
+            .modal-content { width: 98%; padding: 15px; }
+            .modal h2 { font-size: 1.2rem; }
+            .player-input { font-size: 0.95rem; }
+            .modal-buttons .btn { padding: 10px; font-size: 0.9rem; }
         }
 
-        .color-display {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid #555;
+        /* NEW: Media query for landscape orientation on small/medium screens */
+        @media (min-width: 576px) and (max-width: 991px) { /* Targeting landscape phones and smaller tablets */
+            body {
+                overflow-y: auto; /* Allow vertical scrolling if necessary (for bottom nav) */
+            }
+
+            .container {
+                padding: 8px; /* Slightly reduced padding */
+                min-height: auto; /* Allow content to dictate height */
+                justify-content: flex-start; /* Align content to top */
+            }
+
+            .timer-section {
+                width: 100%;
+                max-width: 100%; /* No max-width for landscape phones */
+                margin-bottom: 5px; /* Reduced margin */
+                padding: 8px; /* Reduced padding */
+            }
+
+            .main-timer {
+                font-size: 2.2rem; /* Reduced timer font size */
+                margin-bottom: 4px;
+            }
+            
+            #overlayTimerDisplay {
+                font-size: 1.2rem; /* Reduced overlay font size */
+                padding: 4px 8px;
+                margin-bottom: 5px;
+            }
+
+            .period-info {
+                font-size: 0.8rem; /* Reduced period info font size */
+                margin-top: 4px;
+                margin-bottom: 5px;
+            }
+
+            .teams-section {
+                grid-template-columns: 1fr 1fr; /* Two columns for teams */
+                gap: 8px; /* Reduced space between team cards */
+                width: 100%;
+                max-width: 100%; /* No max-width for landscape phones */
+                flex-grow: 1; /* Allow teams section to take available space */
+            }
+
+            .team-card {
+                padding: 8px; /* Reduced padding inside card */
+            }
+
+            .team-name {
+                font-size: 0.9rem; /* Reduced team name font */
+                margin-bottom: 5px;
+            }
+
+            .score-display {
+                font-size: 1.5rem; /* Reduced score font size */
+                margin-bottom: 5px;
+            }
+
+            .score-controls {
+                gap: 5px; /* Reduced gap between score buttons */
+            }
+
+            .score-btn {
+                width: 35px; /* Smaller score buttons */
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .sanction-line {
+                font-size: 0.75rem; /* Smaller sanction info */
+                margin-bottom: 2px;
+                gap: 2px;
+            }
+
+            .card-player, .exclusion-timer {
+                font-size: 0.65rem; /* Smaller player numbers */
+                padding: 1px 3px;
+                min-width: unset;
+                margin-right: 2px;
+            }
+
+            .exclusion-timer {
+                min-width: 40px; /* Slightly reduced min-width */
+                padding: 2px 5px;
+            }
+
+            .time-outs {
+                font-size: 0.75rem;
+                margin-bottom: 2px;
+            }
+
+            .team-actions {
+                margin-top: 5px; /* Reduced margin */
+                gap: 5px;
+            }
+
+            .team-actions .btn {
+                padding: 5px 6px; /* Smaller action buttons */
+                font-size: 0.7rem;
+                min-width: 45px;
+            }
+
+            .exclusions-list {
+                margin-top: 5px;
+                gap: 2px;
+            }
+
+            .bottom-nav {
+                flex-direction: row; /* Keep nav buttons in a row */
+                margin-top: 10px; /* Reduced margin to bring it closer */
+                width: 100%;
+                justify-content: center; /* Center buttons */
+                flex-wrap: wrap; /* Allow wrapping */
+            }
+
+            .nav-btn {
+                flex: none; /* Do not grow, let content dictate width */
+                width: auto; /* Auto width */
+                padding: 8px 10px; /* Smaller nav buttons */
+                font-size: 0.8rem;
+                min-width: 80px;
+            }
+
+            .modal-content {
+                max-width: 90%; /* Allow modals to take more width */
+                width: auto;
+                padding: 15px;
+                font-size: 0.9rem; /* Smaller font in modals */
+            }
+
+            .modal h2 {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+
+            .player-input {
+                font-size: 0.85rem;
+                padding: 6px;
+                margin-bottom: 10px;
+            }
+
+            .modal-buttons .btn {
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+
+            /* Styles spécifiques pour le modal des paramètres en mode paysage */
+            #settingsModal .modal-content {
+                display: grid; /* Utilise CSS Grid pour la mise en page */
+                grid-template-columns: 1fr 1fr; /* Deux colonnes */
+                gap: 10px 15px; /* Espacement entre les lignes et les colonnes */
+                align-items: center; /* Centre les éléments verticalement */
+                text-align: left; /* Alignement du texte à gauche */
+                max-width: 95vw; /* Utilise une plus grande largeur de l'écran */
+                transform: translate(-50%, -50%) scale(0.9); /* Réduire légèrement pour faire tenir le contenu */
+                transform-origin: center; /* Point d'origine de la transformation */
+                overflow-y: auto; /* Permettre le défilement si le contenu dépasse, mais on vise à l'éviter */
+                max-height: 95vh; /* Limiter la hauteur pour les petits écrans */
+            }
+
+            #settingsModal .modal-content h2 {
+                grid-column: 1 / -1; /* Le titre prend toute la largeur */
+                text-align: center;
+                margin-bottom: 5px;
+            }
+            
+            #settingsModal .modal-content > div { /* Les div conteneurs des labels/inputs */
+                margin-bottom: 0px !important; /* Supprime les marges verticales pour un espacement grid plus fin */
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start; /* Aligne le label et l'input à gauche */
+            }
+
+            #settingsModal label {
+                font-size: 0.8rem; /* Réduire la taille de la police des labels */
+                margin-bottom: 2px; /* Petite marge sous le label */
+            }
+
+            #settingsModal .player-input,
+            #settingsModal input[type="color"] {
+                width: 100%; /* S'assurer que les inputs prennent toute la largeur de leur colonne */
+                padding: 5px; /* Réduire le padding des inputs */
+                font-size: 0.8rem; /* Réduire la taille de la police des inputs */
+            }
+
+            #settingsModal .modal-buttons {
+                grid-column: 1 / -1; /* Les boutons prennent toute la largeur en bas */
+                flex-direction: row; /* Les boutons côte à côte */
+                justify-content: center; /* Centre les boutons */
+                gap: 8px;
+                margin-top: 10px; /* Ajouter une marge au-dessus des boutons */
+            }
+            
+            #settingsModal .modal-buttons .btn {
+                flex: 1; /* Permet aux boutons de prendre l'espace disponible */
+                min-width: unset; /* Annuler le min-width par défaut */
+            }
         }
-        
-        /* Media Queries for Responsiveness */
-        @media (max-width: 600px) {
-            .score-display, .timer-display {
-                font-size: 6em; /* Smaller font for smaller screens */
+
+        /* Further adjustments for larger screens (tablets/desktops) */
+        @media (min-width: 992px) { /* Changed from 768px to 992px */
+            .container {
+                max-width: 960px; /* Limit overall width on larger screens */
+                margin: 0 auto; /* Center container */
             }
 
-            .period-display {
-                font-size: 2.5em;
+            .timer-section {
+                max-width: 600px;
             }
 
-            .btn {
-                padding: 12px 20px;
-                font-size: 1em;
-                min-width: 120px;
+            .main-timer {
+                font-size: 3.5rem;
             }
 
-            .journal-section, .modal-content {
-                width: 95%; /* Use more width on small screens */
+            .teams-section {
+                max-width: 900px; /* Larger max-width for teams */
+                gap: 30px;
             }
 
-            .journal-input {
-                width: calc(100% - 90px);
+            .team-card {
+                padding: 20px;
+            }
+
+            .team-name {
+                font-size: 1.2rem;
+            }
+
+            .score-display {
+                font-size: 2.5rem;
+            }
+
+            .score-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .bottom-nav {
+                max-width: 900px; /* Align with teams section */
+            }
+
+            .nav-btn {
+                font-size: 1rem;
             }
         }
-        @media (max-width: 400px) {
-            .score-display, .timer-display {
-                font-size: 5em;
-            }
-        }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="team-names">
-            <span id="teamA-name" class="team-name">Équipe A</span>
-            <span id="teamB-name" class="team-name">Équipe B</span>
-        </div>
-        <div class="score-pair">
-            <div id="score-teamA" class="team-score">0<div class="goal-text">But!</div></div>
-            <div id="score-teamB" class="team-score">0<div class="goal-text">But!</div></div>
-        </div>
-        
-        <div id="timer" class="timer-display">00:00</div>
-        <div id="period" class="period-display">Période 1</div>
-
-        <div class="controls">
-            <button id="startPauseBtn" class="btn btn-green">Démarrer</button>
-            <button id="resetTimerBtn" class="btn btn-red">Réinitialiser Temps</button>
-            <button id="periodBtn" class="btn btn-period">Changer Période</button>
-            <button id="settingsBtn" class="btn btn-warning">Paramètres</button>
-            <button id="journalBtn" class="btn btn-info">Journal</button>
+        <div class="timer-section">
+            <div id="overlayTimerDisplay"></div> 
+            <div class="main-timer" id="mainTimer">00:00</div>
+            <div class="period-info" id="periodInfo">1ère période</div>
         </div>
 
-        <div class="journal-section" style="display: none;">
-            <h3>Journal de Match</h3>
-            <ul id="journal-list" class="journal-list"></ul>
-            <input type="text" id="journal-input" placeholder="Ajouter une note...">
-            <button id="add-journal-btn" class="add-journal-btn">Ajouter</button>
+        <div class="teams-section">
+            <div class="team-card team-blue" id="team1Card">
+                <div class="team-name" id="team1Name" data-team-id="1">Équipe 1</div>
+                <div class="score-section">
+                    <div class="score-display" id="team1Score">0</div>
+                    <div class="score-controls">
+                        <button class="btn btn-danger score-btn" data-team-id="1" data-score-change="-1">-</button>
+                        <button class="btn btn-success score-btn" data-team-id="1" data-score-change="1">+</button>
+                    </div>
+                </div>
+                <div class="sanction-line">
+                    🟨 Jaunes: <span id="team1YellowPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    ✌🏻 2min: <span id="team1ExclusionsPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    🟥 Rouges: <span id="team1RedPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    🟦 Bleus: <span id="team1BluePlayers"></span>
+                </div>
+                <div class="time-outs">
+                    ⏱️ TM: <span id="team1TimeOuts">0</span>/3
+                </div>
+                <div class="team-actions">
+                    <button class="btn btn-success" id="team1TimeOutBtn" data-team-id="1">TM</button>
+                </div>
+                <div class="exclusions-list" id="team1Exclusions">
+                    <div class="exclusion-timer inactive" id="team1Ex1">--:--</div>
+                    <div class="exclusion-timer inactive" id="team1Ex2">--:--</div>
+                    <div class="exclusion-timer inactive" id="team1Ex3">--:--</div>
+                </div>
+            </div>
+
+            <div class="team-card team-red" id="team2Card">
+                <div class="team-name" id="team2Name" data-team-id="2">Équipe 2</div>
+                <div class="score-section">
+                    <div class="score-display" id="team2Score">0</div>
+                    <div class="score-controls">
+                        <button class="btn btn-danger score-btn" data-team-id="2" data-score-change="-1">-</button>
+                        <button class="btn btn-success score-btn" data-team-id="2" data-score-change="1">+</button>
+                    </div>
+                </div>
+                <div class="sanction-line">
+                    🟨 Jaunes: <span id="team2YellowPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    ✌🏻 2min: <span id="team2ExclusionsPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    🟥 Rouges: <span id="team2RedPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    🟦 Bleus: <span id="team2BluePlayers"></span>
+                </div>
+                <div class="time-outs">
+                    ⏱️ TM: <span id="team2TimeOuts">0</span>/3
+                </div>
+                <div class="team-actions">
+                    <button class="btn btn-success" id="team2TimeOutBtn" data-team-id="2">TM</button>
+                </div>
+                <div class="exclusions-list" id="team2Exclusions">
+                    <div class="exclusion-timer inactive" id="team2Ex1">--:--</div>
+                    <div class="exclusion-timer inactive" id="team2Ex2">--:--</div>
+                    <div class="exclusion-timer inactive" id="team2Ex3">--:--</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <button class="btn btn-primary nav-btn" id="journalBtn">📄 Journal</button>
+            <button class="btn btn-white nav-btn" id="settingsBtn">⚙️ Paramètres</button>
+            <button class="btn btn-info nav-btn" id="fullScreenBtn">Full Screen</button> 
+            <button class="btn btn-danger nav-btn" id="resetBtn">🔁 Reset</button>
         </div>
     </div>
 
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal">
+    <div class="modal" id="resetModal">
         <div class="modal-content">
-            <span id="closeSettingsModalBtn" class="close-button">&times;</span>
-            <h2>Paramètres du Match</h2>
-            <div class="form-group">
-                <label for="teamA-name-input">Nom Équipe A:</label>
-                <input type="text" id="teamA-name-input" value="Équipe A">
-                <div class="team-color-picker">
-                    <label>Couleur Équipe A:</label>
-                    <input type="color" id="teamA-color-input" value="#ff0000">
-                    <div id="teamA-color-display" class="color-display" style="background-color: #ff0000;"></div>
-                </div>
+            <div class="reset-warning">
+                <h3>⚠️ Attention</h3>
+                <p>Êtes-vous sûr de vouloir remettre à zéro ? Toutes les données du match seront perdues.</p>
             </div>
-            <div class="form-group">
-                <label for="teamB-name-input">Nom Équipe B:</label>
-                <input type="text" id="teamB-name-input" value="Équipe B">
-                <div class="team-color-picker">
-                    <label>Couleur Équipe B:</label>
-                    <input type="color" id="teamB-color-input" value="#0000ff">
-                    <div id="teamB-color-display" class="color-display" style="background-color: #0000ff;"></div>
-                </div>
+            <div class="modal-buttons">
+                <button class="btn btn-success" id="saveBeforeResetBtn">💾 Sauvegarder puis Reset</button>
+                <button class="btn btn-danger" id="confirmResetBtn">🔁 Reset sans sauvegarder</button>
+                <button class="btn btn-secondary" id="cancelResetBtn">❌ Annuler</button>
             </div>
-            <div class="form-group">
-                <label for="period-duration-input">Durée par période (minutes):</label>
-                <input type="number" id="period-duration-input" value="30" min="1">
-            </div>
-            <div class="form-group">
-                <label for="num-periods-input">Nombre de périodes:</label>
-                <input type="number" id="num-periods-input" value="2" min="1">
-            </div>
-            <button id="saveSettingsBtn" class="btn btn-green">Enregistrer les Paramètres</button>
         </div>
     </div>
 
-    <!-- Message Modal (replaces alert()) -->
-    <div id="messageModal" class="modal">
+    <div class="modal" id="playerModal">
         <div class="modal-content">
-            <span id="closeMessageModalBtn" class="close-button">&times;</span>
-            <h2 id="messageModalTitle">Message</h2>
-            <p id="messageText" style="text-align: center; margin-bottom: 20px; font-size: 1.1em;"></p>
-            <button id="okMessageModalBtn" class="btn btn-green">OK</button>
+            <h2 id="modalTitle">Gestion des joueurs</h2>
+            <input type="number" class="player-input" id="playerNumber" placeholder="N° du joueur" min="1" max="99">
+            <div class="modal-buttons">
+                <button class="btn btn-warning" id="yellowCardBtn">🟨 Carton Jaune</button>
+                <button class="btn btn-primary" id="exclusionBtn">⏱️ Exclusion 2min</button>
+                <button class="btn btn-danger" id="redCardBtn">🟥 Carton Rouge</button>
+                <button class="btn btn-info" id="blueCardBtn">🟦 Carton Bleu</button> 
+                <button class="btn btn-secondary" id="closePlayerModalBtn">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="journalModal">
+        <div class="modal-content">
+            <h2>Journal du match</h2>
+            <div id="journalContent" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+                <div class="journal-entry">
+                    <span class="journal-time">[00:00]</span> Début du match
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-success" id="saveJournalBtn" style="flex: 1;">💾 Sauvegarder</button>
+                <button class="btn btn-secondary" id="closeJournalModalBtn">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h2>Paramètres</h2>
+            <div style="margin-bottom: 10px;">
+                <label>Nom Équipe 1:</label>
+                <input type="text" class="player-input" id="team1NameInput" value="Équipe 1">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Nom Équipe 2:</label>
+                <input type="text" class="player-input" id="team2NameInput" value="Équipe 2">
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <label>Couleur Équipe 1:</label>
+                <input type="color" id="team1ColorInput" value="#0066cc">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Couleur Équipe 2:</label>
+                <input type="color" id="team2ColorInput" value="#cc0000">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Nombre de périodes:</label>
+                <input type="number" class="player-input" id="numberOfPeriodsInput" value="2" min="1">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Durée période (minutes):</label>
+                <input type="number" class="player-input" id="periodDurationInput" value="30" min="1">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Durée pause (minutes):</label>
+                <input type="number" class="player-input" id="pauseDurationInput" value="10" min="1">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Durée exclusion (secondes):</label>
+                <input type="number" class="player-input" id="exclusionDurationInput" value="120" min="30" max="300">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Chrono principal (MM:SS):</label>
+                <input type="text" class="player-input" id="mainTimerInput" placeholder="MM:SS">
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-success" id="saveSettingsBtn" style="flex: 1;">Sauvegarder</button>
+                <button class="btn btn-secondary" id="closeSettingsModalBtn">Fermer</button>
+            </div>
         </div>
     </div>
 
     <script>
         // =========================================================
-        // 1. Core Variables
+        // 1. Game State Management
         // =========================================================
-        let timer;
-        let isRunning = false;
-        let timeRemaining = 0; // seconds
-        let currentPeriod = 1;
+        const gameState = {
+            mainTimer: 0, // in seconds (resets per period)
+            globalGameTime: 0, // NEW: Total time elapsed since match start (never resets)
+            isRunning: false,
+            period: 1, // 1 = first half, 2 = break, 3 = second half, 4 = finished
+            breakTimer: 0,
+            isTimeOutActive: false,
+            timeOutRemaining: 0,
+            team1: { score: 0, yellow: 0, red: 0, blue: 0, timeOutsTaken: 0, players: {}, exclusions: [null, null, null] },
+            team2: { score: 0, yellow: 0, red: 0, blue: 0, timeOutsTaken: 0, players: {}, exclusions: [null, null, null] },
+            journal: [],
+            currentTeam: 1, // Used for player modal context
+            // Default game settings (can be changed in settings modal)
+            periodDuration: 1800, // 30 minutes
+            pauseDuration: 600, // 10 minutes
+            numberOfPeriods: 2, // NEW: Default to 2 periods
+            exclusionDuration: 120, // 2 minutes
+            returnedDisplayDuration: 10, // Duration (in seconds) "RENTREE" is shown on exclusion timer
+        };
 
-        let scoreA = 0;
-        let scoreB = 0;
-
-        let teamAName = localStorage.getItem('teamAName') || 'Équipe A';
-        let teamBName = localStorage.getItem('teamBName') || 'Équipe B';
-        let teamAColor = localStorage.getItem('teamAColor') || '#ff0000';
-        let teamBColor = localStorage.getItem('teamBColor') || '#0000ff';
-        let periodDuration = parseInt(localStorage.getItem('periodDuration')) || 30; // minutes
-        let numPeriods = parseInt(localStorage.getItem('numPeriods')) || 2;
-
-        let journalEntries = JSON.parse(localStorage.getItem('journalEntries')) || [];
-
-        // =========================================================
-        // 2. DOM Elements
-        // =========================================================
-        const timerDisplay = document.getElementById('timer');
-        const startPauseBtn = document.getElementById('startPauseBtn');
-        const resetTimerBtn = document.getElementById('resetTimerBtn');
-        const periodBtn = document.getElementById('periodBtn');
-        const settingsBtn = document.getElementById('settingsBtn');
-        const journalBtn = document.getElementById('journalBtn');
-        const journalSection = document.querySelector('.journal-section');
-        const journalList = document.getElementById('journal-list');
-        const journalInput = document.getElementById('journal-input');
-        const addJournalBtn = document.getElementById('add-journal-btn');
-
-        const scoreTeamA = document.getElementById('score-teamA');
-        const scoreTeamB = document.getElementById('score-teamB');
-        const periodDisplay = document.getElementById('period');
-        const teamANameDisplay = document.getElementById('teamA-name');
-        const teamBNameDisplay = document.getElementById('teamB-name');
-
-        const settingsModal = document.getElementById('settingsModal');
-        const teamANameInput = document.getElementById('teamA-name-input');
-        const teamBNameInput = document.getElementById('teamB-name-input');
-        const teamAColorInput = document.getElementById('teamA-color-input');
-        const teamBColorInput = document.getElementById('teamB-color-input');
-        const teamAColorDisplay = document.getElementById('teamA-color-display');
-        const teamBColorDisplay = document.getElementById('teamB-color-display');
-        const periodDurationInput = document.getElementById('period-duration-input');
-        const numPeriodsInput = document.getElementById('num-periods-input');
-        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-        const closeSettingsModalBtn = document.getElementById('closeSettingsModalBtn');
-
-        // Nouveaux éléments DOM pour la modal de message
-        const messageModal = document.getElementById('messageModal');
-        const messageModalTitle = document.getElementById('messageModalTitle');
-        const messageText = document.getElementById('messageText');
-        const closeMessageModalBtn = document.getElementById('closeMessageModalBtn');
-        const okMessageModalBtn = document.getElementById('okMessageModalBtn');
-
+        let timerInterval;
+        let timeOutInterval;
 
         // =========================================================
-        // 3. Timer Functions
+        // 2. Utility Functions
         // =========================================================
-        function updateTimerDisplay() {
-            const minutes = Math.floor(timeRemaining / 60);
-            const seconds = timeRemaining % 60;
-            timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function vibrate(duration = 50) {
+            if (navigator.vibrate) {
+                navigator.vibrate(duration);
+            }
+        }
+
+        // function playSound() { /* Removed as per user request */ } 
+
+        function rgbToHex(rgb) {
+            if (!rgb || rgb.indexOf('rgb') === -1) return rgb; 
+            const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!rgbMatch) return rgbMatch[0]; // Return the original rgb string if it's already invalid
+            const hex = (x) => ("0" + parseInt(x).toString(16)).slice(-2);
+            return "#" + hex(rgbMatch[1]) + hex(rgbMatch[2]) + hex(rgbMatch[3]);
+        }
+
+        // Helper function to check if a string starts with a vowel (case-insensitive, handles accented vowels)
+        function startsWithVowel(str) {
+            return /^[aeiouyAEIOUYÀÈÌÒÙàèìòù]/i.test(str);
+        }
+
+        function addToJournal(text) {
+            const time = formatTime(gameState.mainTimer); // Journal uses main timer for context
+            const team1Name = document.getElementById('team1Name').textContent;
+            const team2Name = document.getElementById('team2Name').textContent;
+            
+            // Get current computed colors and convert to hex for consistency and direct use in style attribute
+            const team1Color = rgbToHex(window.getComputedStyle(document.getElementById('team1Name')).color);
+            const team2Color = rgbToHex(window.getComputedStyle(document.getElementById('team2Name')).color);
+
+            let journalEntryText = text;
+
+            // Define replacements. Sort by length to avoid partial matches (e.g., "Paris" and "Paris SG")
+            const replacements = [
+                { original: team1Name, colored: `<span class="journal-team-name" style="color: ${team1Color}">${team1Name}</span>` },
+                { original: team2Name, colored: `<span class="journal-team-name" style="color: ${team2Color}">${team2Name}</span>` },
+                // Include generic team names for other journal entries not directly updated by changeScore/requestTimeOut
+                { original: 'Équipe 1', colored: `<span class="journal-team-name" style="color: ${team1Color}">Équipe 1</span>` }, // Use original generic name in replacement to avoid infinite loop if team name is 'Équipe 1'
+                { original: 'Équipe 2', colored: `<span class="journal-team-name" style="color: ${team2Color}">Équipe 2</span>` }
+            ].sort((a, b) => b.original.length - a.original.length); // Process longer strings first
+
+            replacements.forEach(item => {
+                // Use word boundary \b to ensure whole word match, for dynamic names that might be part of another word
+                // Need to escape special characters in the team name if any, but assuming simple names here.
+                const escapedOriginal = item.original.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                // Only replace if not already part of a <span class="journal-team-name"> to prevent nested spans
+                const regex = new RegExp(`(?<!<span class="journal-team-name"[^>]*>)\\b${escapedOriginal}\\b(?!<\\/span>)`, 'g');
+                journalEntryText = journalEntryText.replace(regex, item.colored);
+            });
+
+            // Ajout du score actuel
+            const currentScore = `${gameState.team1.score}-${gameState.team2.score}`;
+            gameState.journal.push(`[${time}] (${currentScore}) ${journalEntryText}`);
+            updateJournalDisplay();
+        }
+
+
+        function updateJournalDisplay() {
+            const journalContent = document.getElementById('journalContent');
+            journalContent.innerHTML = gameState.journal.map(entry => 
+                `<div class="journal-entry"><span class="journal-time">${entry.split(']')[0]}]</span>${entry.split(']')[1]}</div>`
+            ).join('');
+            journalContent.scrollTop = journalContent.scrollHeight; // Scroll to bottom
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        // =========================================================
+        // 3. Timer Logic
+        // =========================================================
+        function toggleTimer() {
+            if (gameState.isTimeOutActive) {
+                // Cannot control main timer during timeout
+                return;
+            }
+
+            if (!gameState.isRunning) {
+                startTimer();
+            } else {
+                pauseTimer();
+            }
         }
 
         function startTimer() {
-            if (!isRunning && timeRemaining > 0) {
-                isRunning = true;
-                startPauseBtn.textContent = 'Pause';
-                startPauseBtn.classList.remove('btn-green');
-                startPauseBtn.classList.add('btn-red');
-                timer = setInterval(() => {
-                    if (timeRemaining > 0) {
-                        timeRemaining--;
-                        updateTimerDisplay();
-                    } else {
-                        pauseTimer();
-                        // Remplacé alert() par showMessage()
-                        showMessage('Fin de Période', `Fin de la Période ${currentPeriod}!`);
-                        addToJournal(`Fin de la Période ${currentPeriod}`);
-                    }
-                }, 1000);
-            } else if (isRunning) {
-                pauseTimer();
-            } else { // Timer is at 00:00 and not running, start new period
-                changePeriod();
+            if (!gameState.isRunning && !gameState.isTimeOutActive) {
+                gameState.isRunning = true;
+                timerInterval = setInterval(updateTimer, 1000);
             }
         }
 
         function pauseTimer() {
-            isRunning = false;
-            startPauseBtn.textContent = 'Démarrer';
-            startPauseBtn.classList.remove('btn-red');
-            startPauseBtn.classList.add('btn-green');
-            clearInterval(timer);
+            gameState.isRunning = false;
+            clearInterval(timerInterval);
         }
 
-        function resetTimer() {
-            pauseTimer();
-            timeRemaining = periodDuration * 60;
-            updateTimerDisplay();
-            addToJournal('Temps réinitialisé');
-        }
-
-        // =========================================================
-        // 4. Period Functions
-        // =========================================================
-        function changePeriod() {
-            pauseTimer();
-            if (currentPeriod < numPeriods) {
-                currentPeriod++;
-                periodDisplay.textContent = `Période ${currentPeriod}`;
-                timeRemaining = periodDuration * 60; // Reset time for new period
-                updateTimerDisplay();
-                addToJournal(`Début de la Période ${currentPeriod}`);
-                startTimer(); // Optionally start timer for new period automatically
-            } else {
-                // Remplacé alert() par showMessage()
-                showMessage('Fin du Match', 'Fin du match!');
-                addToJournal('Fin du match');
-                // Optionally reset match or prompt for new game
+        function updateTimer() {
+            // Global game time only increments during active playing periods (not during breaks or timeouts)
+            if (gameState.period % 2 !== 0 && !gameState.isTimeOutActive) {
+                gameState.globalGameTime++;
             }
-        }
 
-        // =========================================================
-        // 5. Score Functions
-        // =========================================================
-        function incrementScore(team) {
-            if (team === 'A') {
-                scoreA++;
-                showGoalAnimation(scoreTeamA);
-                addToJournal(`But Équipe ${teamAName} (${scoreA}-${scoreB})`);
-            } else {
-                scoreB++;
-                showGoalAnimation(scoreTeamB);
-                addToJournal(`But Équipe ${teamBName} (${scoreA}-${scoreB})`);
+            if (gameState.isTimeOutActive) {
+                // Main timer is paused, and globalGameTime is paused by the condition above
+                updateDisplay(); 
+                return; 
+            }
+
+            if (gameState.period % 2 === 0) { // It's a break (even period number)
+                gameState.breakTimer++;
+                if (gameState.breakTimer >= gameState.pauseDuration) {
+                    gameState.period++; // Move to next playing period
+                    gameState.breakTimer = 0;
+                    gameState.mainTimer = 0; // Main timer resets for new period
+                    vibrate(200);
+                    addToJournal(`Début de la ${(gameState.period + 1) / 2}ème période`);
+                    pauseTimer(); // Pause the timer for manual restart of the next period
+                }
+            } else { // It's a playing period (odd period number)
+                gameState.mainTimer++;
+                if (gameState.mainTimer >= gameState.periodDuration) {
+                    // Check if it's the end of the last period or an intermediate period
+                    if (gameState.period < (2 * gameState.numberOfPeriods - 1)) { // Not the last playing period
+                        gameState.period++; // Move to a break (even period number)
+                        gameState.breakTimer = 0; // Reset break timer for the upcoming pause
+                        vibrate(200);
+                        addToJournal(`Fin de la ${(gameState.period + 1) / 2 - 1}ème période - Pause`);
+                        // Do NOT call pauseTimer() here. Let timerInterval continue to run for breakTimer.
+                    } else { // It's the last playing period
+                        gameState.period = 2 * gameState.numberOfPeriods; // Set to a final state indicator
+                        pauseTimer(); // Pause after the match ends
+                        vibrate(300);
+                        addToJournal('Fin du match');
+                    }
+                }
             }
             updateDisplay();
         }
 
-        function showGoalAnimation(element) {
-            const goalText = element.querySelector('.goal-text');
-            goalText.style.opacity = 1;
-            goalText.style.animation = 'none'; // Reset animation
-            void goalText.offsetWidth; // Trigger reflow
-            goalText.style.animation = 'fadeOutUp 1s forwards';
-        }
-
+        // =========================================================
+        // 4. Display Update Functions
+        // =========================================================
         function updateDisplay() {
-            scoreTeamA.firstChild.nodeValue = scoreA; // Update score text
-            scoreTeamB.firstChild.nodeValue = scoreB; // Update score text
-            teamANameDisplay.textContent = teamAName;
-            teamBNameDisplay.textContent = teamBName;
+            const mainTimerElement = document.getElementById('mainTimer');
+            const overlayTimerDisplay = document.getElementById('overlayTimerDisplay');
+            const periodInfoElement = document.getElementById('periodInfo');
+            
+            // Logic for showing overlay timer (Time Out or Pause)
+            if (gameState.isTimeOutActive) {
+                mainTimerElement.style.opacity = '1'; // Main timer always visible
+                overlayTimerDisplay.style.display = 'flex'; 
+                overlayTimerDisplay.textContent = `TEMPS MORT: ${gameState.timeOutRemaining}`;
+                overlayTimerDisplay.classList.remove('pause-timer'); 
+                
+                if (gameState.timeOutRemaining <= 10) {
+                    overlayTimerDisplay.classList.add('alert');
+                } else {
+                    overlayTimerDisplay.classList.remove('alert');
+                }
+            } else if (gameState.period % 2 === 0 && gameState.period < (2 * gameState.numberOfPeriods)) { // It's a break (even period number)
+                mainTimerElement.style.opacity = '1'; 
+                overlayTimerDisplay.style.display = 'flex'; 
+                overlayTimerDisplay.textContent = `PAUSE: ${formatTime(gameState.pauseDuration - gameState.breakTimer)}`;
+                overlayTimerDisplay.classList.remove('alert'); 
+                overlayTimerDisplay.classList.add('pause-timer'); 
+            } else { 
+                mainTimerElement.style.opacity = '1'; 
+                overlayTimerDisplay.style.display = 'none';
+                overlayTimerDisplay.classList.remove('alert', 'pause-timer'); 
+            }
+
+            mainTimerElement.textContent = formatTime(gameState.mainTimer);
+
+            // Update Period Info and main timer color
+            if (gameState.period % 2 !== 0 && gameState.period <= (2 * gameState.numberOfPeriods - 1)) { // Active playing period
+                periodInfoElement.textContent = `${(gameState.period + 1) / 2}ère période`;
+                const remainingTime = gameState.periodDuration - gameState.mainTimer;
+                if (remainingTime <= 30 && remainingTime > 0) { 
+                    mainTimerElement.style.color = '#dc3545'; // Red color for last 30 seconds
+                } else {
+                    mainTimerElement.style.color = '#00ff00'; // Green color otherwise
+                }
+            } else if (gameState.period % 2 === 0 && gameState.period < (2 * gameState.numberOfPeriods)) { // Break period
+                periodInfoElement.textContent = 'Pause'; 
+                mainTimerElement.style.color = '#ffd700'; 
+            } else if (gameState.period === (2 * gameState.numberOfPeriods)) { // Match finished
+                periodInfoElement.textContent = 'Match terminé';
+                mainTimerElement.style.color = '#ff4500';
+            }
+
+
+            // Update sanction displays for both teams
+            updateCardPlayers('team1', 'yellow');
+            updateCardPlayers('team2', 'yellow');
+            updateCardPlayers('team1', 'red');
+            updateCardPlayers('team2', 'red');
+            updateCardPlayers('team1', 'blue'); // NEW: Update blue card players
+            updateCardPlayers('team2', 'blue'); // NEW: Update blue card players
+            updateExclusionPlayers('team1'); 
+            updateExclusionPlayers('team2'); 
+            
+            // Update exclusion timers based on global game time
+            [gameState.team1, gameState.team2].forEach((team, tIndex) => {
+                team.exclusions.forEach((excl, i) => {
+                    const exclusionElement = document.getElementById(`team${tIndex + 1}Ex${i + 1}`);
+                    if (excl) {
+                        const elapsed = gameState.globalGameTime - excl.startTime; // Use globalGameTime here
+                        const remaining = gameState.exclusionDuration - elapsed; 
+
+                        if (remaining <= 0) {
+                            // Exclusion has just ended or already ended
+                            if (!excl.isCompleted) { 
+                                excl.isCompleted = true; 
+                                excl.returnedDisplayTimestamp = gameState.globalGameTime; // Use globalGameTime here
+                                // playSound(); // Re-enable if sounds are added back
+                                vibrate(150);
+                                const teamName = document.getElementById(`team${tIndex + 1}Name`).textContent;
+                                addToJournal(`${teamName} - Joueur ${excl.player} : Exclusion terminée`); // Use actual team name
+                            }
+                            
+                            // Check if still within the 10-second "RENTREE" display period
+                            if ((gameState.globalGameTime - excl.returnedDisplayTimestamp) < gameState.returnedDisplayDuration) { // Use globalGameTime here
+                                exclusionElement.textContent = `RENTREE J${excl.player}`;
+                                exclusionElement.classList.remove('inactive', 'completed-pulsing');
+                                exclusionElement.classList.add('returned');
+                            } else {
+                                // After 10 seconds, reset the button and clear the slot
+                                exclusionElement.classList.remove('returned', 'completed-pulsing'); 
+                                exclusionElement.classList.add('inactive');
+                                exclusionElement.textContent = '--:--';
+                                team.exclusions[i] = null; // Free up the exclusion slot
+                            }
+                        } else {
+                            // Exclusion still active
+                            const mins = Math.floor(remaining / 60);
+                            const secs = remaining % 60;
+                            exclusionElement.classList.remove('inactive', 'returned'); 
+                            if (remaining <= 10) {
+                                exclusionElement.classList.add('completed-pulsing');
+                            } else {
+                                exclusionElement.classList.remove('completed-pulsing');
+                            }
+                            exclusionElement.innerHTML = `J${excl.player} ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                        }
+                    } else {
+                        // Slot is null (empty), ensure it's inactive
+                        exclusionElement.classList.add('inactive');
+                        exclusionElement.classList.remove('completed-pulsing', 'returned');
+                        exclusionElement.textContent = '--:--';
+                    }
+                });
+            });
+
+            // Update scores
+            document.getElementById('team1Score').textContent = gameState.team1.score;
+            document.getElementById('team2Score').textContent = gameState.team2.score;
+            
+            // Update Time Outs
+            document.getElementById('team1TimeOuts').textContent = gameState.team1.timeOutsTaken;
+            document.getElementById('team2TimeOuts').textContent = gameState.team2.timeOutsTaken;
+
+            // Disable TM buttons if maxed out or if a timeout is active or if it's break/finished
+            const disableTimeOutBtns = gameState.isTimeOutActive || gameState.period % 2 === 0 || gameState.period === (2 * gameState.numberOfPeriods);
+            document.getElementById('team1TimeOutBtn').disabled = gameState.team1.timeOutsTaken >= 3 || disableTimeOutBtns;
+            document.getElementById('team2TimeOutBtn').disabled = gameState.team2.timeOutsTaken >= 3 || disableTimeOutBtns;
+        }
+
+        function updateCardPlayers(teamId, cardType) {
+            const teamData = gameState[teamId];
+            const playerListElement = document.getElementById(`${teamId}${capitalizeFirstLetter(cardType)}Players`);
+            playerListElement.innerHTML = ''; // Clear current list
+            const playersWithCard = [];
+
+            for (const playerNum in teamData.players) {
+                if (teamData.players.hasOwnProperty(playerNum)) {
+                    if (cardType === 'yellow' && teamData.players[playerNum].yellow) {
+                        playersWithCard.push(playerNum);
+                    } else if (cardType === 'red' && teamData.players[playerNum].red) {
+                        playersWithCard.push(playerNum);
+                    } else if (cardType === 'blue' && teamData.players[playerNum].blue) { // NEW: Blue card check
+                        playersWithCard.push(playerNum);
+                    }
+                }
+            }
+
+            playersWithCard.forEach(playerNum => {
+                const playerSpan = document.createElement('span');
+                let className = '';
+                if (cardType === 'red') {
+                    className = 'red-card-player';
+                } else if (cardType === 'yellow') {
+                    className = 'yellow-card-player';
+                } else if (cardType === 'blue') { // NEW: Apply blue card style
+                    className = 'blue-card-player';
+                }
+                playerSpan.className = `card-player ${className}`;
+                playerSpan.textContent = playerNum;
+                playerListElement.appendChild(playerSpan);
+            });
+        }
+
+        function updateExclusionPlayers(teamId) {
+            const teamData = gameState[teamId];
+            const playerListElement = document.getElementById(`${teamId}ExclusionsPlayers`);
+            playerListElement.innerHTML = ''; 
+            const playersWithExclusionHistory = [];
+
+            for (const playerNum in teamData.players) {
+                if (teamData.players.hasOwnProperty(playerNum)) {
+                    // Include players who have had at least one exclusion AND do NOT have a red card or blue card
+                    // A player with a red/blue card is definitively out and their 2min penalty is handled by the red card logic.
+                    if (teamData.players[playerNum].exclusions > 0 && !teamData.players[playerNum].red && !teamData.players[playerNum].blue) {
+                        playersWithExclusionHistory.push(playerNum);
+                    }
+                }
+            }
+            
+            playersWithExclusionHistory.sort((a, b) => parseInt(a) - parseInt(b));
+
+            playersWithExclusionHistory.forEach(playerNum => {
+                const exclCount = teamData.players[playerNum].exclusions;
+                const playerSpan = document.createElement('span');
+                playerSpan.className = 'card-player excluded-player';
+                playerSpan.textContent = `${playerNum} (${exclCount})`;
+                playerListElement.appendChild(playerSpan);
+            });
+        }
+
+        // Update team colors and name text colors from settings
+        function updateTeamColorsDisplay() {
+            const team1Color = document.getElementById('team1ColorInput').value;
+            const team2Color = document.getElementById('team2ColorInput').value;
+            
+            document.getElementById('team1Card').style.borderLeftColor = team1Color;
+            document.getElementById('team2Card').style.borderLeftColor = team2Color;
+            document.getElementById('team1Name').style.color = team1Color;
+            document.getElementById('team2Name').style.color = team2Color;
         }
 
         // =========================================================
-        // 6. Settings Functions
+        // 5. Game Actions (Score, Time Out, Sanctions)
         // =========================================================
+        function changeScore(teamId, change) { 
+            if (gameState.isTimeOutActive) return; 
+
+            const teamData = teamId === 1 ? gameState.team1 : gameState.team2;
+            teamData.score = Math.max(0, teamData.score + change);
+            
+            if (change > 0) {
+                vibrate(100);
+                const teamName = document.getElementById(`team${teamId}Name`).textContent;
+                // Determine prefix based on vowel
+                const prefix = startsWithVowel(teamName) ? "l'" : "";
+                // Le score affiché dans le journal sera automatiquement le nouveau score grâce à la modification de addToJournal
+                addToJournal(`But pour ${prefix}${teamName}`); 
+            }
+            
+            updateDisplay();
+        }
+
+        function requestTimeOut(teamId) {
+            if (gameState.isTimeOutActive) {
+                alert("Un temps mort est déjà en cours.");
+                return;
+            }
+            const teamData = teamId === 1 ? gameState.team1 : gameState.team2;
+            if (teamData.timeOutsTaken >= 3) {
+                alert(`L'équipe ${document.getElementById(`team${teamId}Name`).textContent} a déjà utilisé tous ses temps morts.`);
+                return;
+            }
+
+            pauseTimer(); 
+            gameState.isTimeOutActive = true;
+            gameState.timeOutRemaining = 60;
+            teamData.timeOutsTaken++;
+            
+            const teamName = document.getElementById(`team${teamId}Name`).textContent;
+            const prefix = startsWithVowel(teamName) ? "l'" : "";
+            addToJournal(`Temps mort demandé par ${prefix}${teamName}`); 
+            vibrate(150);
+            updateDisplay(); 
+
+            timeOutInterval = setInterval(() => {
+                gameState.timeOutRemaining--;
+                if (gameState.timeOutRemaining <= 0) {
+                    clearInterval(timeOutInterval);
+                    gameState.isTimeOutActive = false;
+                    vibrate(250);
+                    addToJournal(`Fin du temps mort de ${prefix}${teamName}`); 
+                    updateDisplay(); 
+                } else {
+                    document.getElementById('overlayTimerDisplay').textContent = `TEMPS MORT: ${gameState.timeOutRemaining}`;
+                }
+            }, 1000);
+        }
+
+        function giveYellowCard() {
+            const playerNum = document.getElementById('playerNumber').value;
+            if (!playerNum) {
+                alert('Veuillez saisir un numéro de joueur');
+                return;
+            }
+
+            const teamData = gameState.currentTeam === 1 ? gameState.team1 : gameState.team2;
+            // Get the actual team name for the journal entry
+            const teamName = document.getElementById(`team${gameState.currentTeam}Name`).textContent;
+            
+            if (!teamData.players[playerNum]) {
+                teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 }; // NEW: Add blue card property
+            }
+
+            if (teamData.players[playerNum].yellow) {
+                alert('Ce joueur a déjà un carton jaune');
+                closeModal(); 
+                return;
+            }
+
+            teamData.players[playerNum].yellow = true;
+            
+            addToJournal(`${teamName} - Joueur ${playerNum} : Carton jaune`);
+            updateDisplay();
+            closeModal();
+        }
+
+        function giveRedCard() {
+            const playerNum = document.getElementById('playerNumber').value;
+            if (!playerNum) {
+                alert('Veuillez saisir un numéro de joueur');
+                return;
+            }
+
+            const teamData = gameState.currentTeam === 1 ? gameState.team1 : gameState.team2;
+            // Get the actual team name for the journal entry
+            const teamName = document.getElementById(`team${gameState.currentTeam}Name`).textContent;
+            
+            if (!teamData.players[playerNum]) {
+                teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 }; // NEW: Add blue card property
+            }
+
+            if (teamData.players[playerNum].red) {
+                alert('Ce joueur a déjà un carton rouge');
+                closeModal(); 
+                return;
+            }
+
+            teamData.players[playerNum].red = true;
+
+            // Mark any active 2-min exclusions for this player as completed
+            for (let i = 0; i < teamData.exclusions.length; i++) {
+                if (teamData.exclusions[i] && teamData.exclusions[i].player == playerNum && !teamData.exclusions[i].isCompleted) {
+                    teamData.exclusions[i].isCompleted = true; 
+                    teamData.exclusions[i].returnedDisplayTimestamp = gameState.globalGameTime; // Use globalGameTime here
+                }
+            }
+            
+            // Handle the 2-minute exclusion for the red card
+            let slotIndex = -1;
+            // Find an available exclusion slot (null or completed and displayed)
+            for (let i = 0; i < 3; i++) {
+                if (!teamData.exclusions[i] || (teamData.exclusions[i].isCompleted && (gameState.globalGameTime - teamData.exclusions[i].returnedDisplayTimestamp) >= gameState.returnedDisplayDuration)) { // Use globalGameTime here
+                    slotIndex = i;
+                    break;
+                }
+            }
+
+            if (slotIndex !== -1) {
+                // Add a new exclusion for the red card duration
+                teamData.exclusions[slotIndex] = {
+                    player: playerNum,
+                    startTime: gameState.globalGameTime, // Use globalGameTime here
+                    isCompleted: false,
+                    returnedDisplayTimestamp: null,
+                    isRedCardExclusion: true // Mark this exclusion as due to a red card
+                };
+                // Increment player's exclusion count (even if direct red)
+                teamData.players[playerNum].exclusions++; 
+                addToJournal(`${teamName} - Joueur ${playerNum} : Carton rouge (Exclusion de 2min pour l'équipe)`);
+            } else {
+                 // If no slot available, just log the red card without visible exclusion on the board
+                addToJournal(`${teamName} - Joueur ${playerNum} : Carton rouge (Pas de slot d'exclusion disponible, mais le joueur est exclu définitivement)`);
+            }
+
+            updateDisplay();
+            closeModal();
+        }
+
+        // NEW: Function to give a Blue Card
+        function giveBlueCard() {
+            const playerNum = document.getElementById('playerNumber').value;
+            if (!playerNum) {
+                alert('Veuillez saisir un numéro de joueur');
+                return;
+            }
+
+            const teamData = gameState.currentTeam === 1 ? gameState.team1 : gameState.team2;
+            const teamName = document.getElementById(`team${gameState.currentTeam}Name`).textContent; // Get actual team name
+
+            if (!teamData.players[playerNum]) {
+                teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 };
+            }
+
+            // A blue card implies a red card if not already given
+            if (!teamData.players[playerNum].red) {
+                alert(`Le joueur ${playerNum} n'avait pas de carton rouge. Un carton rouge sera automatiquement attribué avant le carton bleu.`);
+                giveRedCard(); // Call red card function, which handles the 2min exclusion and journal entry
+                // Re-fetch player data after red card might have updated it
+                if (!teamData.players[playerNum]) { // Re-check in case redCard closed modal
+                    teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 };
+                }
+            }
+
+            if (teamData.players[playerNum].blue) {
+                alert('Ce joueur a déjà un carton bleu.');
+                closeModal();
+                return;
+            }
+
+            teamData.players[playerNum].blue = true;
+            
+            addToJournal(`${teamName} - Joueur ${playerNum} : Carton Bleu (Rapport disciplinaire)`);
+            updateDisplay();
+            closeModal();
+        }
+
+
+        function giveExclusion() {
+            const playerNum = document.getElementById('playerNumber').value;
+            if (!playerNum) {
+                alert('Veuillez saisir un numéro de joueur');
+                return;
+            }
+
+            const teamData = gameState.currentTeam === 1 ? gameState.team1 : gameState.team2;
+            const teamName = document.getElementById(`team${gameState.currentTeam}Name`).textContent; // Get actual team name
+            
+            if (!teamData.players[playerNum]) {
+                teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 }; // NEW: Add blue card property
+            }
+
+            if (teamData.players[playerNum].red || teamData.players[playerNum].blue) { // Check for blue card too
+                alert('Ce joueur a un carton rouge ou bleu et est déjà exclu définitivement.');
+                closeModal(); 
+                return;
+            }
+
+            if (teamData.players[playerNum].exclusions >= 2) { 
+                alert(`Le joueur ${playerNum} de l'${teamName} reçoit sa 3ème exclusion et un carton rouge !`);
+                teamData.players[playerNum].red = true;
+                // Mark any active 2-min exclusions for this player as completed
+                for (let i = 0; i < teamData.exclusions.length; i++) {
+                    if (teamData.exclusions[i] && teamData.exclusions[i].player == playerNum && !teamData.exclusions[i].isCompleted) {
+                        teamData.exclusions[i].isCompleted = true;
+                        teamData.exclusions[i].returnedDisplayTimestamp = gameState.globalGameTime; // Use globalGameTime here
+                    }
+                }
+                addToJournal(`${teamName} - Joueur ${playerNum} : 3ème exclusion et Carton Rouge !`);
+                updateDisplay();
+                closeModal();
+                return;
+            }
+
+            let slotIndex = -1;
+            // Find a slot that is null (empty) or has a completed exclusion that has finished its "returned" display
+            for (let i = 0; i < 3; i++) {
+                if (!teamData.exclusions[i] || (teamData.exclusions[i].isCompleted && (gameState.globalGameTime - teamData.exclusions[i].returnedDisplayTimestamp) >= gameState.returnedDisplayDuration)) { // Use globalGameTime here
+                    slotIndex = i;
+                    break;
+                }
+            }
+
+            if (slotIndex === -1) {
+                alert('Toutes les exclusions sont déjà en cours pour cette équipe. (Max 3 actives simultanément)');
+                closeModal(); 
+                return;
+            }
+
+            teamData.exclusions[slotIndex] = {
+                player: playerNum,
+                startTime: gameState.globalGameTime, // Use globalGameTime here
+                isCompleted: false,
+                returnedDisplayTimestamp: null
+            };
+            teamData.players[playerNum].exclusions++; 
+
+            const exclusionElement = document.getElementById(`team${gameState.currentTeam}Ex${slotIndex + 1}`);
+            exclusionElement.classList.remove('inactive', 'returned'); 
+            exclusionElement.classList.add('active'); 
+            exclusionElement.innerHTML = `J${playerNum} ${formatTime(gameState.exclusionDuration)}`;
+
+            addToJournal(`${teamName} - Joueur ${playerNum} : Exclusion 2 minutes (Excl. #${teamData.players[playerNum].exclusions})`);
+            updateDisplay();
+            closeModal();
+        }
+
+        // =========================================================
+        // 6. Modal Functions
+        // =========================================================
+        function openPlayerModal(team) {
+            gameState.currentTeam = team;
+            document.getElementById('modalTitle').textContent = `${document.getElementById(`team${team}Name`).textContent} - Gestion des joueurs`;
+            document.getElementById('playerNumber').value = '';
+            document.getElementById('playerNumber').focus();
+            document.getElementById('playerModal').style.display = 'block';
+        }
+
+        function openJournalModal() {
+            updateJournalDisplay(); 
+            document.getElementById('journalModal').style.display = 'block';
+        }
+
         function openSettingsModal() {
-            teamANameInput.value = teamAName;
-            teamBNameInput.value = teamBName;
-            teamAColorInput.value = teamAColor;
-            teamBColorInput.value = teamBColor;
-            periodDurationInput.value = periodDuration;
-            numPeriodsInput.value = numPeriods;
-            updateTeamColorsDisplay();
-            settingsModal.style.display = 'flex';
+            document.getElementById('settingsModal').style.display = 'block';
+            document.getElementById('team1NameInput').value = document.getElementById('team1Name').textContent;
+            document.getElementById('team2NameInput').value = document.getElementById('team2Name').textContent;
+            
+            const team1BorderColor = window.getComputedStyle(document.getElementById('team1Card')).borderLeftColor;
+            const team2BorderColor = window.getComputedStyle(document.getElementById('team2Card')).borderLeftColor;
+            document.getElementById('team1ColorInput').value = rgbToHex(team1BorderColor) || '#0066cc'; 
+            document.getElementById('team2ColorInput').value = rgbToHex(team2BorderColor) || '#cc0000'; 
+
+            document.getElementById('periodDurationInput').value = gameState.periodDuration / 60;
+            document.getElementById('pauseDurationInput').value = gameState.pauseDuration / 60;
+            document.getElementById('numberOfPeriodsInput').value = gameState.numberOfPeriods; // Load current value
+            document.getElementById('mainTimerInput').value = formatTime(gameState.mainTimer);
+            document.getElementById('exclusionDurationInput').value = parseInt(document.getElementById('exclusionDurationInput').value); // Ensure it's number
         }
 
         function closeModal() {
-            settingsModal.style.display = 'none';
-            journalSection.style.display = 'none'; // Also close journal if open
-        }
-
-        // Nouvelle fonction pour afficher un message personnalisé
-        function showMessage(title, message) {
-            messageModalTitle.textContent = title;
-            messageText.textContent = message;
-            messageModal.style.display = 'flex';
-        }
-
-        // Nouvelle fonction pour fermer la modal de message
-        function closeMessageModal() {
-            messageModal.style.display = 'none';
-        }
-
-        function saveSettings() {
-            teamAName = teamANameInput.value;
-            teamBName = teamBNameInput.value;
-            teamAColor = teamAColorInput.value;
-            teamBColor = teamBColorInput.value;
-            periodDuration = parseInt(periodDurationInput.value) || 30;
-            numPeriods = parseInt(numPeriodsInput.value) || 2;
-
-            localStorage.setItem('teamAName', teamAName);
-            localStorage.setItem('teamBName', teamBName);
-            localStorage.setItem('teamAColor', teamAColor);
-            localStorage.setItem('teamBColor', teamBColor);
-            localStorage.setItem('periodDuration', periodDuration.toString());
-            localStorage.setItem('numPeriods', numPeriods.toString());
-
-            updateDisplay(); // Update names on main screen
-            updateTeamColorsDisplay(); // Update colors
-            closeModal();
-            resetTimer(); // Reset timer to new duration
-        }
-
-        function updateTeamColorsDisplay() {
-            teamAColorDisplay.style.backgroundColor = teamAColor;
-            teamBColorDisplay.style.backgroundColor = teamBColor;
-            // Optionally update score box background colors
-            scoreTeamA.style.backgroundColor = teamAColor;
-            scoreTeamB.style.backgroundColor = teamBColor;
-        }
-
-        // =========================================================
-        // 7. Journal Functions
-        // =========================================================
-        function showJournal() {
-            journalSection.style.display = 'block';
-            renderJournal();
-        }
-
-        function renderJournal() {
-            journalList.innerHTML = '';
-            journalEntries.forEach(entry => {
-                const li = document.createElement('li');
-                li.textContent = entry;
-                journalList.appendChild(li);
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
             });
-            journalList.scrollTop = journalList.scrollHeight; // Scroll to bottom
         }
 
-        function addToJournal(entry) {
-            const timestamp = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            journalEntries.push(`[${timestamp}] ${entry}`);
-            localStorage.setItem('journalEntries', JSON.stringify(journalEntries));
-            if (journalSection.style.display === 'block') { // Only render if journal is open
-                renderJournal();
+        // =========================================================
+        // 7. Full Screen Logic (NEW)
+        // =========================================================
+        function enterFullScreen() {
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) {
+                docEl.requestFullscreen();
+            } else if (docEl.mozRequestFullScreen) { /* Firefox */
+                docEl.mozRequestFullScreen();
+            } else if (docEl.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                docEl.webkitRequestFullscreen();
+            } else if (docEl.msRequestFullscreen) { /* IE/Edge */
+                docEl.msRequestFullscreen();
+            }
+        }
+
+        function exitFullScreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { /* Firefox */
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE/Edge */
+                document.msExitFullscreen();
+            }
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement &&    // standard
+                !document.mozFullScreenElement && // Firefox
+                !document.webkitFullscreenElement && // Chrome, Safari and Opera
+                !document.msFullscreenElement) {  // IE/Edge
+                enterFullScreen();
+            } else {
+                exitFullScreen();
             }
         }
 
         // =========================================================
-        // 8. Initial Setup / Data Loading
+        // 8. Data Persistence (Save/Reset)
         // =========================================================
-        function initializeApp() {
-            timeRemaining = periodDuration * 60; // Initialize time based on settings
-            updateTimerDisplay();
-            updateDisplay();
-            renderJournal(); // Load existing journal entries
-            updateTeamColorsDisplay(); // Set initial colors
+        function showResetModal() {
+            document.getElementById('resetModal').style.display = 'block';
         }
-        
+
+        function confirmReset() {
+            performReset();
+            closeModal();
+        }
+
+        function saveBeforeReset() {
+            saveJournal(); // Save journal before resetting
+            performReset();
+            closeModal();
+        }
+
+        function performReset() {
+            pauseTimer();
+            clearInterval(timeOutInterval); // Clear any active timeout interval
+            
+            // Reset all game state to initial values
+            gameState.mainTimer = 0;
+            gameState.globalGameTime = 0; // NEW: Reset global game time on full reset
+            gameState.period = 1;
+            gameState.breakTimer = 0;
+            gameState.isRunning = false;
+            gameState.isTimeOutActive = false;
+            gameState.timeOutRemaining = 0;
+            gameState.team1 = { score: 0, yellow: 0, red: 0, blue: 0, timeOutsTaken: 0, players: {}, exclusions: [null, null, null] }; // NEW: Reset blue cards
+            gameState.team2 = { score: 0, yellow: 0, red: 0, blue: 0, timeOutsTaken: 0, players: {}, exclusions: [null, null, null] }; // NEW: Reset blue cards
+            gameState.journal = [];
+            
+            updateDisplay(); // Update UI after reset
+            addToJournal('Début du match'); // Add initial journal entry
+        }
+
+        function saveSettings() {
+            // Update team names on display
+            document.getElementById('team1Name').textContent = document.getElementById('team1NameInput').value;
+            document.getElementById('team2Name').textContent = document.getElementById('team2NameInput').value;
+            
+            // Update team colors on display and save them
+            updateTeamColorsDisplay(); 
+            
+            // Update game duration settings
+            gameState.numberOfPeriods = parseInt(document.getElementById('numberOfPeriodsInput').value); // Save number of periods
+            gameState.periodDuration = parseInt(document.getElementById('periodDurationInput').value) * 60;
+            gameState.pauseDuration = parseInt(document.getElementById('pauseDurationInput').value) * 60;
+            gameState.exclusionDuration = parseInt(document.getElementById('exclusionDurationInput').value); 
+
+            const mainTimerInput = document.getElementById('mainTimerInput').value;
+            const timeParts = mainTimerInput.split(':');
+            if (timeParts.length === 2 && !isNaN(timeParts[0]) && !isNaN(timeParts[1])) {
+                const newMinutes = parseInt(timeParts[0]);
+                const newSeconds = parseInt(timeParts[1]);
+                if (newMinutes >= 0 && newSeconds >= 0 && newSeconds < 60) {
+                    const newMainTimer = (newMinutes * 60) + newSeconds;
+                    if (newMainTimer !== gameState.mainTimer) {
+                        // When adjusting main timer, calculate difference to apply to globalGameTime
+                        const mainTimerDiff = newMainTimer - gameState.mainTimer;
+                        gameState.mainTimer = newMainTimer;
+                        // Adjust globalGameTime only if in active playing periods
+                        if (gameState.period % 2 !== 0) { // Only adjust if in a playing period
+                            gameState.globalGameTime += mainTimerDiff;
+                            // Ensure globalGameTime doesn't go negative if mainTimer is set to a much smaller value
+                            gameState.globalGameTime = Math.max(0, gameState.globalGameTime);
+                        }
+                        
+                        addToJournal(`Chrono principal ajusté manuellement à ${formatTime(gameState.mainTimer)}`);
+                        updateDisplay(); // Update display immediately after adjustment
+                    }
+                } else {
+                    alert('Format de temps principal invalide (MM:SS, secondes entre 0 et 59). Le temps n\'a pas été modifié.');
+                }
+            } else {
+                alert('Format de temps principal invalide (MM:SS). Le temps n\'a pas été modifié.');
+            }
+            
+            closeModal();
+        }
+
+        function saveJournal() {
+            updateJournalDisplay(); // Ensure the display is updated before saving
+            const now = new Date();
+            const filename = `Match_${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}_${now.getHours().toString().padStart(2,'0')}-${now.getMinutes().toString().padStart(2,'0')}.txt`;
+            
+            const team1Name = document.getElementById('team1Name').textContent;
+            const team2Name = document.getElementById('team2Name').textContent;
+            
+            let content = `Match du ${now.toLocaleDateString('fr-FR')} - ${now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}\n`;
+            content += `Équipes: ${team1Name} vs ${team2Name}\n`;
+            content += `Score final: ${gameState.team1.score} - ${gameState.team2.score}\n\n`;
+            content += `=== Journal du match ===\n`;
+            // Remove HTML tags for saving to plain text file
+            content += gameState.journal.map(entry => {
+                const parts = entry.split(']');
+                return `${parts[0]}]${parts[1].replace(/<[^>]*>/g, '')}`; // Remove HTML from the message part
+            }).join('\n');
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Journal sauvegardé avec succès !');
+        }
+
         // =========================================================
-        // 9. Event Listeners
+        // 9. Event Listener Initialization
         // =========================================================
         function initEventListeners() {
-            startPauseBtn.addEventListener('click', startTimer);
-            resetTimerBtn.addEventListener('click', resetTimer);
-            periodBtn.addEventListener('click', changePeriod);
-            scoreTeamA.addEventListener('click', () => incrementScore('A'));
-            scoreTeamB.addEventListener('click', () => incrementScore('B'));
-            settingsBtn.addEventListener('click', openSettingsModal);
-            journalBtn.addEventListener('click', showJournal);
-            addJournalBtn.addEventListener('click', () => {
-                const note = journalInput.value.trim();
-                if (note) {
-                    addToJournal(`Note: ${note}`);
-                    journalInput.value = '';
+            // Main Timer and Overlays
+            document.getElementById('mainTimer').addEventListener('click', toggleTimer);
+            document.getElementById('overlayTimerDisplay').addEventListener('click', () => {
+                // Allows interrupting pause by clicking the overlay (only if it's a break and not a timeout)
+                if (gameState.period % 2 === 0 && !gameState.isTimeOutActive && gameState.period < (2 * gameState.numberOfPeriods)) {
+                    const confirmInterruption = confirm("Es-tu sûr de vouloir interrompre la pause et démarrer la prochaine période ?");
+                    if (confirmInterruption) {
+                        gameState.period++; // Move to next playing period
+                        gameState.breakTimer = 0; 
+                        gameState.mainTimer = 0; 
+                        gameState.isRunning = false; // Prevents auto-restart
+                        clearInterval(timerInterval); 
+                        vibrate(200);
+                        addToJournal(`Pause interrompue - Début de la ${(gameState.period + 1) / 2}ème période`);
+                        updateDisplay();
+                    }
+                } else if (gameState.isTimeOutActive) { // Handle Time Out interruption
+                    const confirmInterruption = confirm("Es-tu sûr de vouloir interrompre le temps mort ?");
+                    if (confirmInterruption) {
+                        clearInterval(timeOutInterval);
+                        gameState.isTimeOutActive = false;
+                        vibrate(150);
+                        addToJournal('Temps mort interrompu manuellement.'); // Journal entry for manual interruption
+                        // REMOVED: startTimer(); // Main timer must be resumed manually
+                        updateDisplay();
+                    }
                 }
             });
 
-            // Modal specific listeners
-            saveSettingsBtn.addEventListener('click', saveSettings);
-            closeSettingsModalBtn.addEventListener('click', closeModal);
-            okMessageModalBtn.addEventListener('click', closeMessageModal); // Listener pour le bouton OK de la modal de message
-            closeMessageModalBtn.addEventListener('click', closeMessageModal); // Listener pour la croix de la modal de message
+            // Team Names (to open player modal)
+            document.getElementById('team1Name').addEventListener('click', (e) => openPlayerModal(parseInt(e.target.dataset.teamId)));
+            document.getElementById('team2Name').addEventListener('click', (e) => openPlayerModal(parseInt(e.target.dataset.teamId)));
+
+            // Score Buttons
+            document.querySelectorAll('.score-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const teamId = parseInt(e.target.dataset.teamId);
+                    const change = parseInt(e.target.dataset.scoreChange);
+                    changeScore(teamId, change);
+                });
+            });
+
+            // Time Out Buttons
+            document.getElementById('team1TimeOutBtn').addEventListener('click', (e) => requestTimeOut(parseInt(e.target.dataset.teamId)));
+            document.getElementById('team2TimeOutBtn').addEventListener('click', (e) => requestTimeOut(parseInt(e.target.dataset.teamId)));
+
+            // Bottom Navigation Buttons
+            document.getElementById('journalBtn').addEventListener('click', openJournalModal);
+            document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+            document.getElementById('fullScreenBtn').addEventListener('click', toggleFullScreen); 
+            document.getElementById('resetBtn').addEventListener('click', showResetModal);
+
+            // Reset Modal Buttons
+            document.getElementById('saveBeforeResetBtn').addEventListener('click', saveBeforeReset);
+            document.getElementById('confirmResetBtn').addEventListener('click', confirmReset);
+            document.getElementById('cancelResetBtn').addEventListener('click', closeModal);
+
+            // Player Modal Buttons
+            document.getElementById('yellowCardBtn').addEventListener('click', giveYellowCard);
+            document.getElementById('exclusionBtn').addEventListener('click', giveExclusion);
+            document.getElementById('redCardBtn').addEventListener('click', giveRedCard);
+            document.getElementById('blueCardBtn').addEventListener('click', giveBlueCard); 
+            document.getElementById('closePlayerModalBtn').addEventListener('click', closeModal);
+
+            // Journal Modal Buttons
+            document.getElementById('saveJournalBtn').addEventListener('click', saveJournal);
+            document.getElementById('closeJournalModalBtn').addEventListener('click', closeModal);
+
+            // Settings Modal Buttons
+            document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+            document.getElementById('closeSettingsModalBtn').addEventListener('click', closeModal);
 
             // Close modals when clicking outside
             window.addEventListener('click', (e) => {
                 if (e.target.classList.contains('modal')) {
-                    closeModal(); // Ferme la modal de paramètres
-                    closeMessageModal(); // Ferme la modal de message
+                    closeModal();
                 }
             });
         }
@@ -709,20 +1724,20 @@
         // 10. Initialization on DOM Load & PWA Registration (NEW)
         // =========================================================
         document.addEventListener('DOMContentLoaded', () => {
-            initializeApp(); // Call initialization function here
             initEventListeners();
+            updateTeamColorsDisplay(); 
+            addToJournal('Début du match'); 
+            updateDisplay();
 
             // PWA Service Worker Registration
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    // Enregistrement du Service Worker avec le chemin absolu corrigé pour GitHub Pages
-                    // Le scope doit correspondre au chemin de base de ton application sur GitHub Pages
-                    navigator.serviceWorker.register('/carton-arbitre-hand/service-worker.js', { scope: '/carton-arbitre-hand/' })
+                    navigator.serviceWorker.register('/service-worker.js')
                         .then(registration => {
                             console.log('Service Worker enregistré avec succès:', registration.scope);
                         })
                         .catch(error => {
-                            console.log('Échec de l\\'enregistrement du Service Worker:', error);
+                            console.log('Échec de l\'enregistrement du Service Worker:', error);
                         });
                 });
             }
