@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arbitre Handball</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤾</text></svg>">
+        <!-- Favicon  -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤾</text></svg>">
     <link rel="manifest" href="/carton-arbitre-hand/manifest.json">
+    <!-- Méta-balises pour le comportement PWA sur mobile -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
@@ -27,1824 +29,1688 @@
 
         .container {
             max-width: 100vw;
-            height: 100vh;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            grid-template-columns: 1fr;
-            gap: 10px;
             padding: 10px;
-            box-sizing: border-box;
-        }
-
-        /* Landscape Mode Specific Styles */
-        @media (orientation: landscape) {
-            .container {
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: auto 1fr;
-                gap: 15px;
-            }
-
-            .main-timer-section {
-                grid-column: 1 / 3; /* Spans across both columns */
-                grid-row: 1;
-            }
-
-            .team-section-left {
-                grid-column: 1;
-                grid-row: 2;
-            }
-
-            .team-section-right {
-                grid-column: 2;
-                grid-row: 2;
-            }
-
-            .bottom-nav {
-                grid-column: 1 / 3; /* Spans across both columns */
-                grid-row: 3;
-                margin-top: 10px;
-            }
-        }
-        
-        @media (min-width: 768px) { /* Tablets and Desktops */
-            .container {
-                max-width: 90%;
-                margin: 0 auto;
-                padding: 20px;
-                height: auto;
-            }
-
-            .main-timer-section {
-                padding: 20px;
-            }
-
-            .team-card {
-                padding: 15px;
-            }
-
-            .bottom-nav button {
-                padding: 15px 25px;
-                font-size: 1.1em;
-            }
-            .modal-content {
-                width: 70%;
-                max-width: 700px;
-            }
-            .journal-entry {
-                font-size: 1em;
-            }
-        }
-
-
-        /* Timer Section */
-        .main-timer-section {
-            background-color: #333;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
+            min-height: 100vh; /* Ensure container takes full viewport height */
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between; /* Space out content vertically */
+        }
+
+        /* Timer Section */
+        .timer-section {
+            text-align: center;
+            background: #2d2d2d;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            position: relative;
+            display: flex; /* Use flexbox to arrange items vertically */
+            flex-direction: column;
+            align-items: center; /* Center items horizontally */
+        }
+
+        .main-timer {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #00ff00; /* Default green */
+            margin-bottom: 8px;
+            text-shadow: 0 0 8px #00ff00;
+            cursor: pointer;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Overlay for Time Out / Pause - Now a banner within the flow */
+        #overlayTimerDisplay { 
+            /* Removed absolute positioning */
+            width: 100%; /* Take full width of parent */
+            background: rgba(0,0,0,0.8);
+            display: none; /* Hidden by default */
             align-items: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            position: relative; /* For the "TEMPS MORT" banner */
+            justify-content: center;
+            font-size: 1.5rem; /* Smaller font for banner */
+            font-weight: bold;
+            color: #ffc107;
+            z-index: 5;
+            text-shadow: 0 0 10px #ffc107;
+            cursor: pointer; /* Indicates it's clickable */
+            padding: 5px 10px; /* Padding for the banner */
+            border-radius: 4px; /* Slightly rounded corners */
+            margin-bottom: 10px; /* Space below the banner */
+        }
+
+        #overlayTimerDisplay.alert {
+            color: #dc3545;
+            text-shadow: 0 0 10px #dc3545;
+            animation: pulse-red 1s infinite;
+        }
+
+        #overlayTimerDisplay.pause-timer {
+            color: #007bff;
+            text-shadow: 0 0 10px #007bff;
+            animation: none;
+        }
+        
+        @keyframes pulse-red {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
 
         .period-info {
-            font-size: 0.9em;
-            color: #ccc;
-            margin-bottom: 5px;
+            font-size: 1rem;
+            color: #ffd700;
+            margin-top: 8px;
+            margin-bottom: 10px;
         }
 
-        .timer {
-            font-family: 'monospace';
-            font-size: 4em;
-            font-weight: bold;
-            color: #FFD700; /* Gold */
-            margin: 5px 0;
-            display: flex;
-            align-items: center;
-        }
-
-        .timer-separator {
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        .timer-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .timer-buttons button {
-            padding: 8px 15px;
-            background-color: #555;
-            color: white;
+        /* General Button Styles */
+        .btn {
+            padding: 10px 15px;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.2s;
-        }
-
-        .timer-buttons button:hover {
-            background-color: #777;
-        }
-
-        .timer-buttons button:active {
-            background-color: #333;
-        }
-
-        /* Banner for Timeouts/Pauses */
-        .banner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 2.5em;
+            border-radius: 6px;
+            font-size: 0.9rem;
             font-weight: bold;
-            text-align: center;
-            width: 80%;
-            display: none; /* Hidden by default */
-            z-index: 10;
-        }
-        .banner.active {
-            display: block;
-        }
-        
-        .banner-timeout {
-            background-color: rgba(255, 0, 0, 0.8);
-        }
-        .banner-pause {
-            background-color: rgba(0, 0, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 70px;
         }
 
-        /* Team Sections */
-        .team-section {
-            display: flex;
-            flex-direction: column;
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-white { background: #ffffff; color: #1a1a1a; }
+        .btn-info { background: #17a2b8; color: white; } /* For Fullscreen/Blue Card */
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Teams Section */
+        .teams-section {
+            display: grid;
+            grid-template-columns: 1fr; /* Default: one column */
             gap: 10px;
             margin-bottom: 10px;
+            flex-grow: 1; /* Allow teams section to take available space */
         }
 
         .team-card {
-            background-color: #222;
+            background: #2d2d2d;
+            padding: 15px;
             border-radius: 8px;
-            padding: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            flex: 1;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex; /* Use flexbox for internal layout */
+            flex-direction: column;
+            justify-content: space-between; /* Space out content inside card */
         }
 
-        .team-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+        .team-blue { border-left: 4px solid #0066cc; }
+        .team-red { border-left: 4px solid #cc0000; }
 
         .team-name {
-            font-size: 1.2em;
+            font-size: 1.1rem;
             font-weight: bold;
+            margin-bottom: 10px;
             cursor: pointer;
-            color: #FFD700;
+            padding: 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
 
-        .score-control {
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .team-name:hover {
+            background: rgba(255,255,255,0.1);
         }
 
-        .score-button {
-            background-color: #FFD700;
-            color: #1a1a1a;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-size: 1.5em;
+        /* Score Section */
+        .score-section { margin-bottom: 10px; }
+
+        .score-display {
+            font-size: 2rem;
             font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .score-controls {
             display: flex;
             justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.2s;
+            gap: 8px;
         }
 
-        .score-button:hover {
-            background-color: #e0b800;
-        }
-        .score-button:active {
-            background-color: #b38e00;
-        }
-
-        .score {
-            font-size: 2em;
+        .score-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.3rem;
             font-weight: bold;
-            margin: 0 10px;
-            min-width: 40px; /* Ensure consistent width */
-            text-align: center;
         }
 
-        /* Sanctions & Timeouts */
-        .sanctions-timeouts {
+        .team-actions {
             display: flex;
-            flex-wrap: wrap;
+            justify-content: center;
             gap: 8px;
             margin-top: 10px;
-            justify-content: center;
-        }
-
-        .sanction-button, .timeout-button {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.2s;
-            color: #1a1a1a; /* Default text color for buttons */
-        }
-
-        .yellow-card { background-color: yellow; }
-        .red-card { background-color: red; color: white; }
-        .blue-card { background-color: blue; color: white; }
-        .timeout-button { background-color: lightblue; }
-        .two-min-exclusion { background-color: orange; }
-
-        .yellow-card:hover { background-color: #e0e000; }
-        .red-card:hover { background-color: #e00000; }
-        .blue-card:hover { background-color: #0000e0; }
-        .timeout-button:hover { background-color: #87ceeb; }
-        .two-min-exclusion:hover { background-color: #e09200; }
-
-        .yellow-card:active { background-color: #c0c000; }
-        .red-card:active { background-color: #b30000; }
-        .blue-card:active { background-color: #0000b3; }
-        .timeout-button:active { background-color: #6495ed; }
-        .two-min-exclusion:active { background-color: #b37300; }
-
-        .timeouts-taken {
-            margin-top: 5px;
-            font-size: 0.8em;
-            color: #bbb;
-        }
-
-        .sanction-list {
-            margin-top: 10px;
-            padding-top: 5px;
-            border-top: 1px solid #444;
-            display: flex;
             flex-wrap: wrap;
-            gap: 5px;
+        }
+
+        /* Sanctions Display */
+        .sanction-line {
+            display: flex;
+            align-items: center;
             justify-content: center;
+            margin-bottom: 3px;
+            font-size: 0.9rem;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .card-player {
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-right: 4px;
+        }
+        
+        .yellow-card-player { background: #ffc107; color: black; }
+        .red-card-player { background: #dc3545; color: white; }
+        .blue-card-player { background: #007bff; color: white; } /* NEW: Blue card player style */
+        .excluded-player { background: #007bff; color: white; } /* Blue for players who have taken a 2min */
+
+        .time-outs {
+            margin-bottom: 3px;
+            font-size: 0.9rem;
         }
 
-        .sanction-item {
-            background-color: #444;
+        .exclusions-list {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .exclusion-timer {
+            background: #cc0000;
             color: white;
             padding: 4px 8px;
             border-radius: 4px;
-            font-size: 0.8em;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-size: 0.8rem;
+            min-width: 55px;
+            margin-right: 4px;
+            transition: background-color 0.3s ease;
         }
 
-        .sanction-item.yellow { background-color: #ccaa00; }
-        .sanction-item.red { background-color: #cc0000; }
-        .sanction-item.blue { background-color: #0000cc; }
-
-        .two-min-timer {
-            background-color: #663300; /* Darker orange */
+        .exclusion-timer.inactive {
+            background: #555;
+            opacity: 0.5;
+        }
+        
+        .exclusion-timer.completed-pulsing { 
+            background-color: #28a745; /* Green */
+            animation: pulse-green 1s infinite; 
+        }
+        
+        .exclusion-timer.returned { 
+            background-color: #28a745; 
             color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            min-width: 60px; /* Ensure timer width */
-            justify-content: space-between;
+            animation: none; 
         }
 
-        .two-min-timer.active {
-            background-color: #ff8c00; /* Bright orange for active */
-        }
-        .two-min-timer.inactive {
-            background-color: #333; /* Grey for inactive */
-            color: #aaa;
-        }
-        .two-min-timer.finished {
-            background-color: green; /* Green for finished */
-            color: white;
-        }
-        .two-min-timer.finished .timer-value {
-            text-decoration: line-through; /* Strikethrough for finished timers */
-        }
-
-        .two-min-timer .player-num {
-            font-weight: bold;
-        }
-        .two-min-timer .timer-value {
-            font-family: 'monospace';
+        @keyframes pulse-green {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
 
         /* Bottom Navigation */
         .bottom-nav {
             display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            background-color: #333;
-            border-radius: 8px;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-            width: 100%; /* Ensure it spans full width */
-            box-sizing: border-box; /* Include padding in width */
-            gap: 5px;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            /* Allow scrolling for this section */
         }
 
-        .bottom-nav button {
+        .nav-btn {
             flex: 1;
-            padding: 10px 15px;
-            background-color: #555;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-        }
-        .bottom-nav button:hover {
-            background-color: #777;
-        }
-        .bottom-nav button:active {
-            background-color: #333;
-        }
-        .bottom-nav button .icon {
-            font-size: 1.2em; /* Adjust icon size */
+            padding: 12px;
+            font-size: 0.9rem;
+            min-width: 100px;
         }
 
         /* Modals */
         .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 100; /* Sit on top */
-            left: 0;
+            display: none;
+            position: fixed;
             top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto; /* Allow scrolling within modals if content is too tall */
         }
 
         .modal-content {
-            background-color: #2a2a2a;
-            margin: auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-        }
-
-        .close-button {
-            color: #aaa;
             position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close-button:hover,
-        .close-button:focus {
-            color: white;
-            text-decoration: none;
-            cursor: pointer;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            width: 95%;
+            max-width: 350px;
+            text-align: center;
         }
 
         .modal h2 {
+            margin-bottom: 15px;
+            color: #ffd700;
+            font-size: 1.3rem;
+        }
+
+        .player-input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: #1a1a1a;
+            color: white;
+            font-size: 1rem;
             text-align: center;
-            color: #FFD700;
-            margin-bottom: 20px;
         }
 
         .modal-buttons {
             display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            gap: 10px;
-        }
-
-        .modal-buttons button, .modal-input-group button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.2s;
-        }
-
-        .modal-buttons .confirm-btn { background-color: #4CAF50; color: white; }
-        .modal-buttons .cancel-btn { background-color: #f44336; color: white; }
-        .modal-buttons .default-btn { background-color: #008CBA; color: white; }
-
-        .modal-buttons .confirm-btn:hover { background-color: #45a049; }
-        .modal-buttons .cancel-btn:hover { background-color: #da190b; }
-        .modal-buttons .default-btn:hover { background-color: #007bb5; }
-
-        /* Player Modal specific */
-        .modal-input-group {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .modal-input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 1.1em;
-        }
-        .modal-input-group input[type="number"],
-        .modal-input-group input[type="text"],
-        .modal-input-group select {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #555;
-            background-color: #333;
-            color: white;
-            font-size: 1em;
-        }
-        .modal-input-group input[type="color"] {
-            width: 100%;
-            height: 40px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .sanction-options {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .sanction-options button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9em;
-            transition: background-color 0.2s;
-            color: #1a1a1a;
-        }
-        .sanction-options .yellow-card-btn { background-color: yellow; }
-        .sanction-options .two-min-btn { background-color: orange; }
-        .sanction-options .red-card-btn { background-color: red; color: white; }
-        .sanction-options .blue-card-btn { background-color: blue; color: white; }
-
-        /* Journal Modal specific */
-        .journal-entries {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #444;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #1a1a1a;
-            margin-bottom: 15px;
-            color: #eee;
-        }
-        .journal-entry {
-            padding: 5px 0;
-            border-bottom: 1px solid #333;
-            font-size: 0.9em;
-        }
-        .journal-entry:last-child {
-            border-bottom: none;
-        }
-        .journal-entry strong {
-            color: #FFD700;
-        }
-
-        /* Settings Modal specific */
-        .settings-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        .settings-item {
-            display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
-        .settings-item label {
-            font-size: 0.9em;
-            color: #bbb;
-        }
-        .settings-item input[type="number"],
-        .settings-item input[type="text"],
-        .settings-item select {
-            width: 100%;
+
+        /* Journal Specific Styles */
+        .journal-entry {
+            background: #333;
             padding: 8px;
+            margin-bottom: 4px;
             border-radius: 4px;
-            border: 1px solid #555;
-            background-color: #333;
-            color: white;
-            font-size: 0.9em;
+            text-align: left;
+            font-size: 0.85rem;
         }
-        .settings-item input[type="color"] {
-            width: 100%;
-            height: 35px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+
+        .journal-time {
+            color: #00ff00;
+            font-weight: bold;
         }
         
-        .settings-item.two-columns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            align-items: center;
-        }
-        .settings-item.two-columns label {
-            grid-column: 1 / 3; /* Label spans both columns */
-        }
-        .settings-item.two-columns input {
-            width: auto; /* Allow input to fit grid column */
+        /* New: Style for colored team names in journal */
+        .journal-team-name {
+            font-weight: bold;
         }
 
+        /* Reset Warning Modal */
+        .reset-warning {
+            background: #dc3545;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .reset-warning h3 {
+            margin-bottom: 8px;
+            color: #ffd700;
+            font-size: 1.1rem;
+        }
+
+        /* Media queries for true mobile portrait optimization */
+        @media (max-width: 575px) { /* Adjusted breakpoint for portrait */
+            .container { padding: 5px; }
+            .timer-section { padding: 10px; margin-bottom: 8px; }
+            .main-timer { font-size: 2.2rem; }
+            #overlayTimerDisplay { font-size: 1.2rem; padding: 4px 8px; margin-bottom: 5px; } /* Smaller font and padding for mobile banner */
+            .period-info { font-size: 0.9rem; }
+            .btn { padding: 8px 12px; font-size: 0.85rem; min-width: 60px; }
+            .team-card { padding: 10px; }
+            .team-name { font-size: 1rem; }
+            .score-display { font-size: 1.8rem; }
+            .score-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+            .sanction-line { font-size: 0.85rem; }
+            .card-player, .exclusion-timer { font-size: 0.75rem; padding: 2px 5px; margin-right: 3px; }
+            .exclusion-timer { min-width: 50px; }
+            .time-outs { font-size: 0.85rem; }
+            .team-actions .btn { min-width: 60px; font-size: 0.85rem; padding: 8px 10px; }
+            .bottom-nav { flex-direction: column; gap: 8px; }
+            .nav-btn { width: 100%; padding: 10px; font-size: 0.9rem; }
+            .modal-content { width: 98%; padding: 15px; }
+            .modal h2 { font-size: 1.2rem; }
+            .player-input { font-size: 0.95rem; }
+            .modal-buttons .btn { padding: 10px; font-size: 0.9rem; }
+        }
+
+        /* NEW: Media query for landscape orientation on small/medium screens */
+        @media (min-width: 576px) and (max-width: 991px) { /* Targeting landscape phones and smaller tablets */
+            body {
+                overflow-y: auto; /* Allow vertical scrolling if necessary (for bottom nav) */
+            }
+
+            .container {
+                padding: 8px; /* Slightly reduced padding */
+                min-height: auto; /* Allow content to dictate height */
+                justify-content: flex-start; /* Align content to top */
+            }
+
+            .timer-section {
+                width: 100%;
+                max-width: 100%; /* No max-width for landscape phones */
+                margin-bottom: 5px; /* Reduced margin */
+                padding: 8px; /* Reduced padding */
+            }
+
+            .main-timer {
+                font-size: 2.2rem; /* Reduced timer font size */
+                margin-bottom: 4px;
+            }
+            
+            #overlayTimerDisplay {
+                font-size: 1.2rem; /* Reduced overlay font size */
+                padding: 4px 8px;
+                margin-bottom: 5px;
+            }
+
+            .period-info {
+                font-size: 0.8rem; /* Reduced period info font size */
+                margin-top: 4px;
+                margin-bottom: 5px;
+            }
+
+            .teams-section {
+                grid-template-columns: 1fr 1fr; /* Two columns for teams */
+                gap: 8px; /* Reduced space between team cards */
+                width: 100%;
+                max-width: 100%; /* No max-width for landscape phones */
+                flex-grow: 1; /* Allow teams section to take available space */
+            }
+
+            .team-card {
+                padding: 8px; /* Reduced padding inside card */
+            }
+
+            .team-name {
+                font-size: 0.9rem; /* Reduced team name font */
+                margin-bottom: 5px;
+            }
+
+            .score-display {
+                font-size: 1.5rem; /* Reduced score font size */
+                margin-bottom: 5px;
+            }
+
+            .score-controls {
+                gap: 5px; /* Reduced gap between score buttons */
+            }
+
+            .score-btn {
+                width: 35px; /* Smaller score buttons */
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .sanction-line {
+                font-size: 0.75rem; /* Smaller sanction info */
+                margin-bottom: 2px;
+                gap: 2px;
+            }
+
+            .card-player, .exclusion-timer {
+                font-size: 0.65rem; /* Smaller player numbers */
+                padding: 1px 3px;
+                min-width: unset;
+                margin-right: 2px;
+            }
+
+            .exclusion-timer {
+                min-width: 40px; /* Slightly reduced min-width */
+                padding: 2px 5px;
+            }
+
+            .time-outs {
+                font-size: 0.75rem;
+                margin-bottom: 2px;
+            }
+
+            .team-actions {
+                margin-top: 5px; /* Reduced margin */
+                gap: 5px;
+            }
+
+            .team-actions .btn {
+                padding: 5px 6px; /* Smaller action buttons */
+                font-size: 0.7rem;
+                min-width: 45px;
+            }
+
+            .exclusions-list {
+                margin-top: 5px;
+                gap: 2px;
+            }
+
+            .bottom-nav {
+                flex-direction: row; /* Keep nav buttons in a row */
+                margin-top: 10px; /* Reduced margin to bring it closer */
+                width: 100%;
+                justify-content: center; /* Center buttons */
+                flex-wrap: wrap; /* Allow wrapping */
+            }
+
+            .nav-btn {
+                flex: none; /* Do not grow, let content dictate width */
+                width: auto; /* Auto width */
+                padding: 8px 10px; /* Smaller nav buttons */
+                font-size: 0.8rem;
+                min-width: 80px;
+            }
+
+            .modal-content {
+                max-width: 90%; /* Allow modals to take more width */
+                width: auto;
+                padding: 15px;
+                font-size: 0.9rem; /* Smaller font in modals */
+            }
+
+            .modal h2 {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+
+            .player-input {
+                font-size: 0.85rem;
+                padding: 6px;
+                margin-bottom: 10px;
+            }
+
+            .modal-buttons .btn {
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+
+            /* Styles spécifiques pour le modal des paramètres en mode paysage */
+            #settingsModal .modal-content {
+                display: grid; /* Utilise CSS Grid pour la mise en page */
+                grid-template-columns: 1fr 1fr; /* Deux colonnes */
+                gap: 10px 15px; /* Espacement entre les lignes et les colonnes */
+                align-items: center; /* Centre les éléments verticalement */
+                text-align: left; /* Alignement du texte à gauche */
+                max-width: 95vw; /* Utilise une plus grande largeur de l'écran */
+                transform: translate(-50%, -50%) scale(0.9); /* Réduire légèrement pour faire tenir le contenu */
+                transform-origin: center; /* Point d'origine de la transformation */
+                overflow-y: auto; /* Permettre le défilement si le contenu dépasse, mais on vise à l'éviter */
+                max-height: 95vh; /* Limiter la hauteur pour les petits écrans */
+            }
+
+            #settingsModal .modal-content h2 {
+                grid-column: 1 / -1; /* Le titre prend toute la largeur */
+                text-align: center;
+                margin-bottom: 5px;
+            }
+            
+            #settingsModal .modal-content > div { /* Les div conteneurs des labels/inputs */
+                margin-bottom: 0px !important; /* Supprime les marges verticales pour un espacement grid plus fin */
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start; /* Aligne le label et l'input à gauche */
+            }
+
+            #settingsModal label {
+                font-size: 0.8rem; /* Réduire la taille de la police des labels */
+                margin-bottom: 2px; /* Petite marge sous le label */
+            }
+
+            #settingsModal .player-input,
+            #settingsModal input[type="color"] {
+                width: 100%; /* S'assurer que les inputs prennent toute la largeur de leur colonne */
+                padding: 5px; /* Réduire le padding des inputs */
+                font-size: 0.8rem; /* Réduire la taille de la police des inputs */
+            }
+
+            #settingsModal .modal-buttons {
+                grid-column: 1 / -1; /* Les boutons prennent toute la largeur en bas */
+                flex-direction: row; /* Les boutons côte à côte */
+                justify-content: center; /* Centre les boutons */
+                gap: 8px;
+                margin-top: 10px; /* Ajouter une marge au-dessus des boutons */
+            }
+            
+            #settingsModal .modal-buttons .btn {
+                flex: 1; /* Permet aux boutons de prendre l'espace disponible */
+                min-width: unset; /* Annuler le min-width par défaut */
+            }
+        }
+
+        /* Further adjustments for larger screens (tablets/desktops) */
+        @media (min-width: 992px) { /* Changed from 768px to 992px */
+            .container {
+                max-width: 960px; /* Limit overall width on larger screens */
+                margin: 0 auto; /* Center container */
+            }
+
+            .timer-section {
+                max-width: 600px;
+            }
+
+            .main-timer {
+                font-size: 3.5rem;
+            }
+
+            .teams-section {
+                max-width: 900px; /* Larger max-width for teams */
+                gap: 30px;
+            }
+
+            .team-card {
+                padding: 20px;
+            }
+
+            .team-name {
+                font-size: 1.2rem;
+            }
+
+            .score-display {
+                font-size: 2.5rem;
+            }
+
+            .score-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .bottom-nav {
+                max-width: 900px; /* Align with teams section */
+            }
+
+            .nav-btn {
+                font-size: 1rem;
+            }
+        }
 
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="main-timer-section">
+        <div class="timer-section">
+            <div id="overlayTimerDisplay"></div> 
+            <div class="main-timer" id="mainTimer">00:00</div>
             <div class="period-info" id="periodInfo">1ère période</div>
-            <div class="timer" id="mainTimer">
-                <span id="minutes">00</span><span class="timer-separator">:</span><span id="seconds">00</span>
-            </div>
-            <div class="timer-buttons">
-                <button id="startPauseBtn">Démarrer</button>
-                <button id="nextPeriodBtn">Période Suivante</button>
-                <button id="resetTimerBtn">Réinitialiser Chrono</button>
-            </div>
-            <div id="timeoutBanner" class="banner banner-timeout">TEMPS MORT</div>
-            <div id="pauseBanner" class="banner banner-pause">PAUSE</div>
         </div>
 
-        <div class="team-section team-section-left">
-            <div class="team-card team-1-card">
-                <div class="team-header">
-                    <span class="team-name" id="team1Name">Équipe 1</span>
-                    <div class="score-control">
-                        <button class="score-button" id="score1Minus">-</button>
-                        <span class="score" id="score1">0</span>
-                        <button class="score-button" id="score1Plus">+</button>
+        <div class="teams-section">
+            <div class="team-card team-blue" id="team1Card">
+                <div class="team-name" id="team1Name" data-team-id="1">Équipe 1</div>
+                <div class="score-section">
+                    <div class="score-display" id="team1Score">0</div>
+                    <div class="score-controls">
+                        <button class="btn btn-danger score-btn" data-team-id="1" data-score-change="-1">-</button>
+                        <button class="btn btn-success score-btn" data-team-id="1" data-score-change="1">+</button>
                     </div>
                 </div>
-                <div class="sanctions-timeouts">
-                    <button class="sanction-button yellow-card" id="yellowCard1">CJ</button>
-                    <button class="sanction-button two-min-exclusion" id="twoMinExclusion1">2min</button>
-                    <button class="sanction-button red-card" id="redCard1">CR</button>
-                    <button class="sanction-button blue-card" id="blueCard1">CB</button>
-                    <button class="timeout-button" id="timeout1Btn">TM</button>
+                <div class="sanction-line">
+                    🟨 Jaunes: <span id="team1YellowPlayers"></span>
                 </div>
-                <div class="timeouts-taken" id="timeoutsTaken1">Temps Morts: 0/3</div>
-                <div class="sanction-list" id="team1Sanctions">
-                    </div>
+                <div class="sanction-line">
+                    ✌🏻 2min: <span id="team1ExclusionsPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    🟥 Rouges: <span id="team1RedPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    🟦 Bleus: <span id="team1BluePlayers"></span>
+                </div>
+                <div class="time-outs">
+                    ⏱️ TM: <span id="team1TimeOuts">0</span>/3
+                </div>
+                <div class="team-actions">
+                    <button class="btn btn-success" id="team1TimeOutBtn" data-team-id="1">TM</button>
+                </div>
+                <div class="exclusions-list" id="team1Exclusions">
+                    <div class="exclusion-timer inactive" id="team1Ex1">--:--</div>
+                    <div class="exclusion-timer inactive" id="team1Ex2">--:--</div>
+                    <div class="exclusion-timer inactive" id="team1Ex3">--:--</div>
+                </div>
             </div>
-        </div>
 
-        <div class="team-section team-section-right">
-            <div class="team-card team-2-card">
-                <div class="team-header">
-                    <span class="team-name" id="team2Name">Équipe 2</span>
-                    <div class="score-control">
-                        <button class="score-button" id="score2Minus">-</button>
-                        <span class="score" id="score2">0</span>
-                        <button class="score-button" id="score2Plus">+</button>
+            <div class="team-card team-red" id="team2Card">
+                <div class="team-name" id="team2Name" data-team-id="2">Équipe 2</div>
+                <div class="score-section">
+                    <div class="score-display" id="team2Score">0</div>
+                    <div class="score-controls">
+                        <button class="btn btn-danger score-btn" data-team-id="2" data-score-change="-1">-</button>
+                        <button class="btn btn-success score-btn" data-team-id="2" data-score-change="1">+</button>
                     </div>
                 </div>
-                <div class="sanctions-timeouts">
-                    <button class="sanction-button yellow-card" id="yellowCard2">CJ</button>
-                    <button class="sanction-button two-min-exclusion" id="twoMinExclusion2">2min</button>
-                    <button class="sanction-button red-card" id="redCard2">CR</button>
-                    <button class="sanction-button blue-card" id="blueCard2">CB</button>
-                    <button class="timeout-button" id="timeout2Btn">TM</button>
+                <div class="sanction-line">
+                    🟨 Jaunes: <span id="team2YellowPlayers"></span>
                 </div>
-                <div class="timeouts-taken" id="timeoutsTaken2">Temps Morts: 0/3</div>
-                <div class="sanction-list" id="team2Sanctions">
-                    </div>
+                <div class="sanction-line">
+                    ✌🏻 2min: <span id="team2ExclusionsPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    🟥 Rouges: <span id="team2RedPlayers"></span>
+                </div>
+                <div class="sanction-line">
+                    🟦 Bleus: <span id="team2BluePlayers"></span>
+                </div>
+                <div class="time-outs">
+                    ⏱️ TM: <span id="team2TimeOuts">0</span>/3
+                </div>
+                <div class="team-actions">
+                    <button class="btn btn-success" id="team2TimeOutBtn" data-team-id="2">TM</button>
+                </div>
+                <div class="exclusions-list" id="team2Exclusions">
+                    <div class="exclusion-timer inactive" id="team2Ex1">--:--</div>
+                    <div class="exclusion-timer inactive" id="team2Ex2">--:--</div>
+                    <div class="exclusion-timer inactive" id="team2Ex3">--:--</div>
+                </div>
             </div>
         </div>
 
         <div class="bottom-nav">
-            <button id="openJournalModalBtn">
-                <span class="icon">📄</span> Journal
-            </button>
-            <button id="openSettingsModalBtn">
-                <span class="icon">⚙️</span> Paramètres
-            </button>
-            <button id="fullScreenBtn">
-                <span class="icon">↔️</span> Full Screen
-            </button>
-            <button id="resetMatchBtn">
-                <span class="icon">🔁</span> Reset
-            </button>
+            <button class="btn btn-primary nav-btn" id="journalBtn">📄 Journal</button>
+            <button class="btn btn-white nav-btn" id="settingsBtn">⚙️ Paramètres</button>
+            <button class="btn btn-info nav-btn" id="fullScreenBtn">Full Screen</button> 
+            <button class="btn btn-danger nav-btn" id="resetBtn">🔁 Reset</button>
         </div>
     </div>
 
-    <div id="resetModal" class="modal">
+    <div class="modal" id="resetModal">
         <div class="modal-content">
-            <span class="close-button" data-modal="resetModal">&times;</span>
-            <h2>Réinitialiser le match ?</h2>
-            <p style="text-align: center; margin-bottom: 20px;">Voulez-vous sauvegarder le journal avant de réinitialiser ?</p>
+            <div class="reset-warning">
+                <h3>⚠️ Attention</h3>
+                <p>Êtes-vous sûr de vouloir remettre à zéro ? Toutes les données du match seront perdues.</p>
+            </div>
             <div class="modal-buttons">
-                <button class="confirm-btn" id="saveAndResetBtn">Sauvegarder & Réinitialiser</button>
-                <button class="cancel-btn" id="resetWithoutSaveBtn">Réinitialiser seulement</button>
-                <button class="default-btn" data-modal="resetModal">Annuler</button>
+                <button class="btn btn-success" id="saveBeforeResetBtn">💾 Sauvegarder puis Reset</button>
+                <button class="btn btn-danger" id="confirmResetBtn">🔁 Reset sans sauvegarder</button>
+                <button class="btn btn-secondary" id="cancelResetBtn">❌ Annuler</button>
             </div>
         </div>
     </div>
 
-    <div id="playerModal" class="modal">
+    <div class="modal" id="playerModal">
         <div class="modal-content">
-            <span class="close-button" data-modal="playerModal">&times;</span>
-            <h2 id="playerModalTitle">Appliquer une sanction</h2>
-            <div class="modal-input-group">
-                <label for="playerNumberInput">Numéro du joueur:</label>
-                <input type="number" id="playerNumberInput" placeholder="Ex: 7" min="1">
-            </div>
-            <div class="sanction-options">
-                <button class="sanction-options yellow-card-btn" id="playerYellowCardBtn">Carton Jaune</button>
-                <button class="sanction-options two-min-btn" id="playerTwoMinBtn">2 minutes</button>
-                <button class="sanction-options red-card-btn" id="playerRedCardBtn">Carton Rouge</button>
-                <button class="sanction-options blue-card-btn" id="playerBlueCardBtn">Carton Bleu</button>
+            <h2 id="modalTitle">Gestion des joueurs</h2>
+            <input type="number" class="player-input" id="playerNumber" placeholder="N° du joueur" min="1" max="99">
+            <div class="modal-buttons">
+                <button class="btn btn-warning" id="yellowCardBtn">🟨 Carton Jaune</button>
+                <button class="btn btn-primary" id="exclusionBtn">⏱️ Exclusion 2min</button>
+                <button class="btn btn-danger" id="redCardBtn">🟥 Carton Rouge</button>
+                <button class="btn btn-info" id="blueCardBtn">🟦 Carton Bleu</button> 
+                <button class="btn btn-secondary" id="closePlayerModalBtn">Fermer</button>
             </div>
         </div>
     </div>
 
-    <div id="journalModal" class="modal">
+    <div class="modal" id="journalModal">
         <div class="modal-content">
-            <span class="close-button" data-modal="journalModal">&times;</span>
             <h2>Journal du match</h2>
-            <div class="journal-entries" id="journalEntries">
+            <div id="journalContent" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+                <div class="journal-entry">
+                    <span class="journal-time">[00:00]</span> Début du match
                 </div>
-            <div class="modal-buttons">
-                <button class="default-btn" id="saveJournalBtn">Sauvegarder le Journal (TXT)</button>
-                <button class="confirm-btn" id="clearJournalBtn">Vider le Journal</button>
-                <button class="cancel-btn" data-modal="journalModal">Fermer</button>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-success" id="saveJournalBtn" style="flex: 1;">💾 Sauvegarder</button>
+                <button class="btn btn-secondary" id="closeJournalModalBtn">Fermer</button>
             </div>
         </div>
     </div>
 
-    <div id="settingsModal" class="modal">
+    <div class="modal" id="settingsModal">
         <div class="modal-content">
-            <span class="close-button" data-modal="settingsModal">&times;</span>
-            <h2>Paramètres du match</h2>
-            <div class="settings-grid">
-                <div class="settings-item">
-                    <label for="team1NameSetting">Nom Équipe 1:</label>
-                    <input type="text" id="team1NameSetting" value="Équipe 1">
-                </div>
-                <div class="settings-item">
-                    <label for="team1ColorSetting">Couleur Équipe 1:</label>
-                    <input type="color" id="team1ColorSetting" value="#00BFFF"> </div>
-                <div class="settings-item">
-                    <label for="team2NameSetting">Nom Équipe 2:</label>
-                    <input type="text" id="team2NameSetting" value="Équipe 2">
-                </div>
-                <div class="settings-item">
-                    <label for="team2ColorSetting">Couleur Équipe 2:</label>
-                    <input type="color" id="team2ColorSetting" value="#FF4500"> </div>
-                <div class="settings-item">
-                    <label for="numPeriodsSetting">Nombre de périodes:</label>
-                    <select id="numPeriodsSetting">
-                        <option value="2">2 périodes</option>
-                        <option value="3">3 périodes</option>
-                        <option value="4">4 périodes</option>
-                    </select>
-                </div>
-                <div class="settings-item two-columns">
-                    <label>Durée des périodes (MM:SS):</label>
-                    <input type="number" id="periodDurationMin" value="30" min="1">
-                    <input type="number" id="periodDurationSec" value="00" min="0" max="59">
-                </div>
-                 <div class="settings-item two-columns">
-                    <label>Durée des pauses (MM:SS):</label>
-                    <input type="number" id="pauseDurationMin" value="10" min="0">
-                    <input type="number" id="pauseDurationSec" value="00" min="0" max="59">
-                </div>
-                <div class="settings-item">
-                    <label for="exclusionDurationSetting">Durée exclusion (secondes):</label>
-                    <input type="number" id="exclusionDurationSetting" value="120" min="30">
-                </div>
-                 <div class="settings-item">
-                    <label for="reEnterDisplayDurationSetting">Durée affichage "Rentré" (secondes):</label>
-                    <input type="number" id="reEnterDisplayDurationSetting" value="10" min="0">
-                </div>
+            <h2>Paramètres</h2>
+            <div style="margin-bottom: 10px;">
+                <label>Nom Équipe 1:</label>
+                <input type="text" class="player-input" id="team1NameInput" value="Équipe 1">
             </div>
-            <div class="modal-buttons">
-                <button class="confirm-btn" id="saveSettingsBtn">Sauvegarder</button>
-                <button class="default-btn" id="closeSettingsModalBtn">Fermer</button>
+            <div style="margin-bottom: 15px;">
+                <label>Nom Équipe 2:</label>
+                <input type="text" class="player-input" id="team2NameInput" value="Équipe 2">
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <label>Couleur Équipe 1:</label>
+                <input type="color" id="team1ColorInput" value="#0066cc">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Couleur Équipe 2:</label>
+                <input type="color" id="team2ColorInput" value="#cc0000">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Nombre de périodes:</label>
+                <input type="number" class="player-input" id="numberOfPeriodsInput" value="2" min="1">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Durée période (minutes):</label>
+                <input type="number" class="player-input" id="periodDurationInput" value="30" min="1">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Durée pause (minutes):</label>
+                <input type="number" class="player-input" id="pauseDurationInput" value="10" min="1">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Durée exclusion (secondes):</label>
+                <input type="number" class="player-input" id="exclusionDurationInput" value="120" min="30" max="300">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Chrono principal (MM:SS):</label>
+                <input type="text" class="player-input" id="mainTimerInput" placeholder="MM:SS">
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-success" id="saveSettingsBtn" style="flex: 1;">Sauvegarder</button>
+                <button class="btn btn-secondary" id="closeSettingsModalBtn">Fermer</button>
             </div>
         </div>
     </div>
-
 
     <script>
         // =========================================================
-        // 1. Global State Variables
+        // 1. Game State Management
         // =========================================================
-        let gameState = {
-            mainTimer: 0, // In seconds
-            timerInterval: null,
-            isTimerRunning: false,
-            currentPeriod: 1,
-            numPeriods: 2,
-            periodDuration: 30 * 60, // 30 minutes in seconds
-            pauseDuration: 10 * 60, // 10 minutes in seconds
-            isPaused: false, // True if the main timer is paused for a timeout or break
-            isBreak: false, // True if it's a period break
-            breakTimer: 0, // Timer for breaks between periods
-
-            team1: {
-                name: "Équipe 1",
-                score: 0,
-                timeoutsTaken: 0,
-                yellowCards: [], // Array of player numbers
-                redCards: [],
-                blueCards: [],
-                exclusions: [], // [{ player: num, startTime: Date.now(), duration: 120, timerId: intervalId, status: 'active'/'inactive'/'finished' }]
-                color: "#00BFFF" // DeepSkyBlue
-            },
-            team2: {
-                name: "Équipe 2",
-                score: 0,
-                timeoutsTaken: 0,
-                yellowCards: [],
-                redCards: [],
-                blueCards: [],
-                exclusions: [],
-                color: "#FF4500" // OrangeRed
-            },
-            journal: [], // [{ timestamp: Date, entry: "text" }]
-            exclusionDuration: 120, // Default 2 minutes
-            reEnterDisplayDuration: 10 // Default 10 seconds for "Rentrée" display
+        const gameState = {
+            mainTimer: 0, // in seconds (resets per period)
+            globalGameTime: 0, // NEW: Total time elapsed since match start (never resets)
+            isRunning: false,
+            period: 1, // 1 = first half, 2 = break, 3 = second half, 4 = finished
+            breakTimer: 0,
+            isTimeOutActive: false,
+            timeOutRemaining: 0,
+            team1: { score: 0, yellow: 0, red: 0, blue: 0, timeOutsTaken: 0, players: {}, exclusions: [null, null, null] },
+            team2: { score: 0, yellow: 0, red: 0, blue: 0, timeOutsTaken: 0, players: {}, exclusions: [null, null, null] },
+            journal: [],
+            currentTeam: 1, // Used for player modal context
+            // Default game settings (can be changed in settings modal)
+            periodDuration: 1800, // 30 minutes
+            pauseDuration: 600, // 10 minutes
+            numberOfPeriods: 2, // NEW: Default to 2 periods
+            exclusionDuration: 120, // 2 minutes
+            returnedDisplayDuration: 10, // Duration (in seconds) "RENTREE" is shown on exclusion timer
         };
 
-        // =========================================================
-        // 2. DOM Elements
-        // =========================================================
-        const mainTimerDisplay = document.getElementById('mainTimer');
-        const minutesDisplay = document.getElementById('minutes');
-        const secondsDisplay = document.getElementById('seconds');
-        const periodInfoDisplay = document.getElementById('periodInfo');
-        const startPauseBtn = document.getElementById('startPauseBtn');
-        const nextPeriodBtn = document.getElementById('nextPeriodBtn');
-        const resetTimerBtn = document.getElementById('resetTimerBtn');
-
-        const team1NameDisplay = document.getElementById('team1Name');
-        const score1Display = document.getElementById('score1');
-        const score1PlusBtn = document.getElementById('score1Plus');
-        const score1MinusBtn = document.getElementById('score1Minus');
-        const timeout1Btn = document.getElementById('timeout1Btn');
-        const timeoutsTaken1Display = document.getElementById('timeoutsTaken1');
-        const team1SanctionsDisplay = document.getElementById('team1Sanctions');
-
-        const team2NameDisplay = document.getElementById('team2Name');
-        const score2Display = document.getElementById('score2');
-        const score2PlusBtn = document.getElementById('score2Plus');
-        const score2MinusBtn = document.getElementById('score2Minus');
-        const timeout2Btn = document.getElementById('timeout2Btn');
-        const timeoutsTaken2Display = document.getElementById('timeoutsTaken2');
-        const team2SanctionsDisplay = document.getElementById('team2Sanctions');
-
-        const timeoutBanner = document.getElementById('timeoutBanner');
-        const pauseBanner = document.getElementById('pauseBanner');
-
-        // Modals
-        const resetModal = document.getElementById('resetModal');
-        const saveAndResetBtn = document.getElementById('saveAndResetBtn');
-        const resetWithoutSaveBtn = document.getElementById('resetWithoutSaveBtn');
-        const resetMatchBtn = document.getElementById('resetMatchBtn'); // From bottom nav
-
-        const playerModal = document.getElementById('playerModal');
-        const playerModalTitle = document.getElementById('playerModalTitle');
-        const playerNumberInput = document.getElementById('playerNumberInput');
-        const yellowCardBtn = document.getElementById('playerYellowCardBtn');
-        const twoMinBtn = document.getElementById('playerTwoMinBtn');
-        const redCardBtn = document.getElementById('playerRedCardBtn');
-        const blueCardBtn = document.getElementById('playerBlueCardBtn');
-
-        const journalModal = document.getElementById('journalModal');
-        const journalEntriesDisplay = document.getElementById('journalEntries');
-        const openJournalModalBtn = document.getElementById('openJournalModalBtn');
-        const saveJournalBtn = document.getElementById('saveJournalBtn');
-        const clearJournalBtn = document.getElementById('clearJournalBtn');
-
-        const settingsModal = document.getElementById('settingsModal');
-        const openSettingsModalBtn = document.getElementById('openSettingsModalBtn');
-        const team1NameSetting = document.getElementById('team1NameSetting');
-        const team1ColorSetting = document.getElementById('team1ColorSetting');
-        const team2NameSetting = document.getElementById('team2NameSetting');
-        const team2ColorSetting = document.getElementById('team2ColorSetting');
-        const numPeriodsSetting = document.getElementById('numPeriodsSetting');
-        const periodDurationMin = document.getElementById('periodDurationMin');
-        const periodDurationSec = document.getElementById('periodDurationSec');
-        const pauseDurationMin = document.getElementById('pauseDurationMin');
-        const pauseDurationSec = document.getElementById('pauseDurationSec');
-        const exclusionDurationSetting = document.getElementById('exclusionDurationSetting');
-        const reEnterDisplayDurationSetting = document.getElementById('reEnterDisplayDurationSetting');
-        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-
-        const fullScreenBtn = document.getElementById('fullScreenBtn');
-
+        let timerInterval;
+        let timeOutInterval;
 
         // =========================================================
-        // 3. Utility Functions
+        // 2. Utility Functions
         // =========================================================
-
-        /**
-         * Formats seconds into MM:SS format.
-         * @param {number} totalSeconds - The total number of seconds.
-         * @returns {string} Formatted time string (MM:SS).
-         */
-        function formatTime(totalSeconds) {
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        /**
-         * Triggers a short vibration if supported.
-         */
-        function vibrate() {
+        function vibrate(duration = 50) {
             if (navigator.vibrate) {
-                navigator.vibrate(100); // Vibrate for 100ms
+                navigator.vibrate(duration);
             }
         }
 
-        /**
-         * Converts an RGB color string to its hexadecimal equivalent.
-         * Useful for saving color pickers' values consistently.
-         * @param {string} rgb - RGB color string (e.g., "rgb(0, 191, 255)").
-         * @returns {string} Hexadecimal color string (e.g., "#00BFFF").
-         */
+        // function playSound() { /* Removed as per user request */ } 
+
         function rgbToHex(rgb) {
-            // Choose the RGB format that matches your input
-            const parts = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            if (!parts) {
-                // If not RGB, assume it's already hex or a named color and return as is
-                return rgb; 
-            }
-            delete parts[0];
-            for (let i = 1; i <= 3; ++i) {
-                parts[i] = parseInt(parts[i]).toString(16);
-                if (parts[i].length === 1) parts[i] = '0' + parts[i];
-            }
-            return '#' + parts.join('');
+            if (!rgb || rgb.indexOf('rgb') === -1) return rgb; 
+            const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!rgbMatch) return rgbMatch[0]; // Return the original rgb string if it's already invalid
+            const hex = (x) => ("0" + parseInt(x).toString(16)).slice(-2);
+            return "#" + hex(rgbMatch[1]) + hex(rgbMatch[2]) + hex(rgbMatch[3]);
         }
 
-        /**
-         * Adds an event to the match journal.
-         * @param {string} entryText - The text description of the event.
-         */
-        function addToJournal(entryText) {
-            const now = new Date();
-            const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const currentFormattedTime = formatTime(gameState.mainTimer);
+        // Helper function to check if a string starts with a vowel (case-insensitive, handles accented vowels)
+        function startsWithVowel(str) {
+            return /^[aeiouyAEIOUYÀÈÌÒÙàèìòù]/i.test(str);
+        }
 
-            // Replace team names with colored versions for better readability in journal
-            let formattedEntryText = entryText.replace(
-                new RegExp(escapeRegExp(gameState.team1.name), 'g'), 
-                `<span style="color:${gameState.team1.color}; font-weight:bold;">${gameState.team1.name}</span>`
-            ).replace(
-                new RegExp(escapeRegExp(gameState.team2.name), 'g'), 
-                `<span style="color:${gameState.team2.color}; font-weight:bold;">${gameState.team2.name}</span>`
-            );
+        function addToJournal(text) {
+            const time = formatTime(gameState.mainTimer); // Journal uses main timer for context
+            const team1Name = document.getElementById('team1Name').textContent;
+            const team2Name = document.getElementById('team2Name').textContent;
+            
+            // Get current computed colors and convert to hex for consistency and direct use in style attribute
+            const team1Color = rgbToHex(window.getComputedStyle(document.getElementById('team1Name')).color);
+            const team2Color = rgbToHex(window.getComputedStyle(document.getElementById('team2Name')).color);
 
-            gameState.journal.push({
-                timestamp: now.toISOString(), // ISO for sorting/saving
-                displayTime: currentFormattedTime,
-                entry: formattedEntryText // Store formatted text for display
+            let journalEntryText = text;
+
+            // Define replacements. Sort by length to avoid partial matches (e.g., "Paris" and "Paris SG")
+            const replacements = [
+                { original: team1Name, colored: `<span class="journal-team-name" style="color: ${team1Color}">${team1Name}</span>` },
+                { original: team2Name, colored: `<span class="journal-team-name" style="color: ${team2Color}">${team2Name}</span>` },
+                // Include generic team names for other journal entries not directly updated by changeScore/requestTimeOut
+                { original: 'Équipe 1', colored: `<span class="journal-team-name" style="color: ${team1Color}">Équipe 1</span>` }, // Use original generic name in replacement to avoid infinite loop if team name is 'Équipe 1'
+                { original: 'Équipe 2', colored: `<span class="journal-team-name" style="color: ${team2Color}">Équipe 2</span>` }
+            ].sort((a, b) => b.original.length - a.original.length); // Process longer strings first
+
+            replacements.forEach(item => {
+                // Use word boundary \b to ensure whole word match, for dynamic names that might be part of another word
+                // Need to escape special characters in the team name if any, but assuming simple names here.
+                const escapedOriginal = item.original.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                // Only replace if not already part of a <span class="journal-team-name"> to prevent nested spans
+                const regex = new RegExp(`(?<!<span class="journal-team-name"[^>]*>)\\b${escapedOriginal}\\b(?!<\\/span>)`, 'g');
+                journalEntryText = journalEntryText.replace(regex, item.colored);
             });
+
+            // Ajout du score actuel
+            const currentScore = `${gameState.team1.score}-${gameState.team2.score}`;
+            gameState.journal.push(`[${time}] (${currentScore}) ${journalEntryText}`);
             updateJournalDisplay();
-            saveGameState(); // Save state after adding to journal
-        }
-        
-        // Helper for addToJournal to escape regex special characters
-        function escapeRegExp(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the matched substring
         }
 
-        /**
-         * Updates the main timer display and period info.
-         */
-        function updateDisplay() {
-            minutesDisplay.textContent = String(Math.floor(gameState.mainTimer / 60)).padStart(2, '0');
-            secondsDisplay.textContent = String(gameState.mainTimer % 60).padStart(2, '0');
 
-            periodInfoDisplay.textContent = `Période ${gameState.currentPeriod}/${gameState.numPeriods}`;
-
-            team1NameDisplay.textContent = gameState.team1.name;
-            team1NameDisplay.style.color = gameState.team1.color;
-            score1Display.textContent = gameState.team1.score;
-            timeoutsTaken1Display.textContent = `Temps Morts: ${gameState.team1.timeoutsTaken}/3`;
-
-            team2NameDisplay.textContent = gameState.team2.name;
-            team2NameDisplay.style.color = gameState.team2.color;
-            score2Display.textContent = gameState.team2.score;
-            timeoutsTaken2Display.textContent = `Temps Morts: ${gameState.team2.timeoutsTaken}/3`;
-
-            updateSanctionDisplays();
-            updateBanners();
+        function updateJournalDisplay() {
+            const journalContent = document.getElementById('journalContent');
+            journalContent.innerHTML = gameState.journal.map(entry => 
+                `<div class="journal-entry"><span class="journal-time">${entry.split(']')[0]}]</span>${entry.split(']')[1]}</div>`
+            ).join('');
+            journalContent.scrollTop = journalContent.scrollHeight; // Scroll to bottom
         }
 
-        /**
-         * Displays/hides timeout and pause banners.
-         */
-        function updateBanners() {
-            if (gameState.isPaused && !gameState.isBreak) {
-                timeoutBanner.classList.add('active');
-                pauseBanner.classList.remove('active');
-            } else if (gameState.isBreak) {
-                pauseBanner.classList.add('active');
-                timeoutBanner.classList.remove('active');
-            } else {
-                timeoutBanner.classList.remove('active');
-                pauseBanner.classList.remove('active');
-            }
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         }
-
 
         // =========================================================
-        // 4. Timer Logic
+        // 3. Timer Logic
         // =========================================================
-
-        /**
-         * Starts or pauses the main game timer.
-         */
         function toggleTimer() {
-            if (gameState.isTimerRunning) {
-                pauseTimer();
-            } else {
+            if (gameState.isTimeOutActive) {
+                // Cannot control main timer during timeout
+                return;
+            }
+
+            if (!gameState.isRunning) {
                 startTimer();
+            } else {
+                pauseTimer();
             }
         }
 
-        /**
-         * Starts the main game timer or break timer.
-         */
         function startTimer() {
-            if (gameState.timerInterval) return; // Prevent multiple intervals
+            if (!gameState.isRunning && !gameState.isTimeOutActive) {
+                gameState.isRunning = true;
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
 
-            gameState.isTimerRunning = true;
-            startPauseBtn.textContent = 'Pause';
-            startPauseBtn.style.backgroundColor = '#f44336'; // Red for Pause
+        function pauseTimer() {
+            gameState.isRunning = false;
+            clearInterval(timerInterval);
+        }
 
-            // Clear any active banners
-            timeoutBanner.classList.remove('active');
-            pauseBanner.classList.remove('active');
+        function updateTimer() {
+            // Global game time only increments during active playing periods (not during breaks or timeouts)
+            if (gameState.period % 2 !== 0 && !gameState.isTimeOutActive) {
+                gameState.globalGameTime++;
+            }
 
-            addToJournal(`Chrono ${gameState.isBreak ? 'pause' : 'match'} démarré`);
+            if (gameState.isTimeOutActive) {
+                // Main timer is paused, and globalGameTime is paused by the condition above
+                updateDisplay(); 
+                return; 
+            }
 
-            gameState.timerInterval = setInterval(() => {
-                if (gameState.isBreak) {
-                    // Handle break timer
-                    if (gameState.breakTimer > 0) {
-                        gameState.breakTimer--;
-                        minutesDisplay.textContent = String(Math.floor(gameState.breakTimer / 60)).padStart(2, '0');
-                        secondsDisplay.textContent = String(gameState.breakTimer % 60).padStart(2, '0');
-                    } else {
-                        // End of break
-                        pauseTimer();
-                        vibrate();
-                        addToJournal(`Fin de la pause entre les périodes.`);
-                        if (gameState.currentPeriod <= gameState.numPeriods) {
-                            periodInfoDisplay.textContent = `Période ${gameState.currentPeriod}/${gameState.numPeriods}`;
-                        }
-                        gameState.isBreak = false; // Reset break state
-                        // The main timer will resume if startPauseBtn is pressed
-                    }
-                } else {
-                    // Handle main game timer
-                    if (gameState.mainTimer < gameState.periodDuration) {
-                        gameState.mainTimer++;
-                        updateDisplay();
-                    } else {
-                        // End of period
-                        pauseTimer();
-                        vibrate();
-                        addToJournal(`Fin de la ${gameState.currentPeriod}ère période.`);
-                        gameState.currentPeriod++;
-                        
-                        if (gameState.currentPeriod <= gameState.numPeriods) {
-                            // Start a break
-                            gameState.isBreak = true;
-                            gameState.breakTimer = gameState.pauseDuration;
-                            periodInfoDisplay.textContent = `PAUSE (Période ${gameState.currentPeriod - 1}/${gameState.numPeriods} terminée)`;
-                            pauseBanner.classList.add('active');
-                            startPauseBtn.textContent = 'Démarrer Pause';
-                            startPauseBtn.style.backgroundColor = '#008CBA'; // Blue for Start Pause
-                            addToJournal(`Début de la pause avant la ${gameState.currentPeriod}ème période.`);
-                        } else {
-                            // End of match
-                            periodInfoDisplay.textContent = 'Match Terminé';
-                            addToJournal('Match Terminé.');
-                            startPauseBtn.textContent = 'Match Terminé';
-                            startPauseBtn.disabled = true; // Disable button
-                            nextPeriodBtn.disabled = true;
-                        }
+            if (gameState.period % 2 === 0) { // It's a break (even period number)
+                gameState.breakTimer++;
+                if (gameState.breakTimer >= gameState.pauseDuration) {
+                    gameState.period++; // Move to next playing period
+                    gameState.breakTimer = 0;
+                    gameState.mainTimer = 0; // Main timer resets for new period
+                    vibrate(200);
+                    addToJournal(`Début de la ${(gameState.period + 1) / 2}ème période`);
+                    pauseTimer(); // Pause the timer for manual restart of the next period
+                }
+            } else { // It's a playing period (odd period number)
+                gameState.mainTimer++;
+                if (gameState.mainTimer >= gameState.periodDuration) {
+                    // Check if it's the end of the last period or an intermediate period
+                    if (gameState.period < (2 * gameState.numberOfPeriods - 1)) { // Not the last playing period
+                        gameState.period++; // Move to a break (even period number)
+                        gameState.breakTimer = 0; // Reset break timer for the upcoming pause
+                        vibrate(200);
+                        addToJournal(`Fin de la ${(gameState.period + 1) / 2 - 1}ème période - Pause`);
+                        // Do NOT call pauseTimer() here. Let timerInterval continue to run for breakTimer.
+                    } else { // It's the last playing period
+                        gameState.period = 2 * gameState.numberOfPeriods; // Set to a final state indicator
+                        pauseTimer(); // Pause after the match ends
+                        vibrate(300);
+                        addToJournal('Fin du match');
                     }
                 }
-                updateExclusionTimers();
-                saveGameState(); // Save state on each second
+            }
+            updateDisplay();
+        }
+
+        // =========================================================
+        // 4. Display Update Functions
+        // =========================================================
+        function updateDisplay() {
+            const mainTimerElement = document.getElementById('mainTimer');
+            const overlayTimerDisplay = document.getElementById('overlayTimerDisplay');
+            const periodInfoElement = document.getElementById('periodInfo');
+            
+            // Logic for showing overlay timer (Time Out or Pause)
+            if (gameState.isTimeOutActive) {
+                mainTimerElement.style.opacity = '1'; // Main timer always visible
+                overlayTimerDisplay.style.display = 'flex'; 
+                overlayTimerDisplay.textContent = `TEMPS MORT: ${gameState.timeOutRemaining}`;
+                overlayTimerDisplay.classList.remove('pause-timer'); 
+                
+                if (gameState.timeOutRemaining <= 10) {
+                    overlayTimerDisplay.classList.add('alert');
+                } else {
+                    overlayTimerDisplay.classList.remove('alert');
+                }
+            } else if (gameState.period % 2 === 0 && gameState.period < (2 * gameState.numberOfPeriods)) { // It's a break (even period number)
+                mainTimerElement.style.opacity = '1'; 
+                overlayTimerDisplay.style.display = 'flex'; 
+                overlayTimerDisplay.textContent = `PAUSE: ${formatTime(gameState.pauseDuration - gameState.breakTimer)}`;
+                overlayTimerDisplay.classList.remove('alert'); 
+                overlayTimerDisplay.classList.add('pause-timer'); 
+            } else { 
+                mainTimerElement.style.opacity = '1'; 
+                overlayTimerDisplay.style.display = 'none';
+                overlayTimerDisplay.classList.remove('alert', 'pause-timer'); 
+            }
+
+            mainTimerElement.textContent = formatTime(gameState.mainTimer);
+
+            // Update Period Info and main timer color
+            if (gameState.period % 2 !== 0 && gameState.period <= (2 * gameState.numberOfPeriods - 1)) { // Active playing period
+                periodInfoElement.textContent = `${(gameState.period + 1) / 2}ère période`;
+                const remainingTime = gameState.periodDuration - gameState.mainTimer;
+                if (remainingTime <= 30 && remainingTime > 0) { 
+                    mainTimerElement.style.color = '#dc3545'; // Red color for last 30 seconds
+                } else {
+                    mainTimerElement.style.color = '#00ff00'; // Green color otherwise
+                }
+            } else if (gameState.period % 2 === 0 && gameState.period < (2 * gameState.numberOfPeriods)) { // Break period
+                periodInfoElement.textContent = 'Pause'; 
+                mainTimerElement.style.color = '#ffd700'; 
+            } else if (gameState.period === (2 * gameState.numberOfPeriods)) { // Match finished
+                periodInfoElement.textContent = 'Match terminé';
+                mainTimerElement.style.color = '#ff4500';
+            }
+
+
+            // Update sanction displays for both teams
+            updateCardPlayers('team1', 'yellow');
+            updateCardPlayers('team2', 'yellow');
+            updateCardPlayers('team1', 'red');
+            updateCardPlayers('team2', 'red');
+            updateCardPlayers('team1', 'blue'); // NEW: Update blue card players
+            updateCardPlayers('team2', 'blue'); // NEW: Update blue card players
+            updateExclusionPlayers('team1'); 
+            updateExclusionPlayers('team2'); 
+            
+            // Update exclusion timers based on global game time
+            [gameState.team1, gameState.team2].forEach((team, tIndex) => {
+                team.exclusions.forEach((excl, i) => {
+                    const exclusionElement = document.getElementById(`team${tIndex + 1}Ex${i + 1}`);
+                    if (excl) {
+                        const elapsed = gameState.globalGameTime - excl.startTime; // Use globalGameTime here
+                        const remaining = gameState.exclusionDuration - elapsed; 
+
+                        if (remaining <= 0) {
+                            // Exclusion has just ended or already ended
+                            if (!excl.isCompleted) { 
+                                excl.isCompleted = true; 
+                                excl.returnedDisplayTimestamp = gameState.globalGameTime; // Use globalGameTime here
+                                // playSound(); // Re-enable if sounds are added back
+                                vibrate(150);
+                                const teamName = document.getElementById(`team${tIndex + 1}Name`).textContent;
+                                addToJournal(`${teamName} - Joueur ${excl.player} : Exclusion terminée`); // Use actual team name
+                            }
+                            
+                            // Check if still within the 10-second "RENTREE" display period
+                            if ((gameState.globalGameTime - excl.returnedDisplayTimestamp) < gameState.returnedDisplayDuration) { // Use globalGameTime here
+                                exclusionElement.textContent = `RENTREE J${excl.player}`;
+                                exclusionElement.classList.remove('inactive', 'completed-pulsing');
+                                exclusionElement.classList.add('returned');
+                            } else {
+                                // After 10 seconds, reset the button and clear the slot
+                                exclusionElement.classList.remove('returned', 'completed-pulsing'); 
+                                exclusionElement.classList.add('inactive');
+                                exclusionElement.textContent = '--:--';
+                                team.exclusions[i] = null; // Free up the exclusion slot
+                            }
+                        } else {
+                            // Exclusion still active
+                            const mins = Math.floor(remaining / 60);
+                            const secs = remaining % 60;
+                            exclusionElement.classList.remove('inactive', 'returned'); 
+                            if (remaining <= 10) {
+                                exclusionElement.classList.add('completed-pulsing');
+                            } else {
+                                exclusionElement.classList.remove('completed-pulsing');
+                            }
+                            exclusionElement.innerHTML = `J${excl.player} ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                        }
+                    } else {
+                        // Slot is null (empty), ensure it's inactive
+                        exclusionElement.classList.add('inactive');
+                        exclusionElement.classList.remove('completed-pulsing', 'returned');
+                        exclusionElement.textContent = '--:--';
+                    }
+                });
+            });
+
+            // Update scores
+            document.getElementById('team1Score').textContent = gameState.team1.score;
+            document.getElementById('team2Score').textContent = gameState.team2.score;
+            
+            // Update Time Outs
+            document.getElementById('team1TimeOuts').textContent = gameState.team1.timeOutsTaken;
+            document.getElementById('team2TimeOuts').textContent = gameState.team2.timeOutsTaken;
+
+            // Disable TM buttons if maxed out or if a timeout is active or if it's break/finished
+            const disableTimeOutBtns = gameState.isTimeOutActive || gameState.period % 2 === 0 || gameState.period === (2 * gameState.numberOfPeriods);
+            document.getElementById('team1TimeOutBtn').disabled = gameState.team1.timeOutsTaken >= 3 || disableTimeOutBtns;
+            document.getElementById('team2TimeOutBtn').disabled = gameState.team2.timeOutsTaken >= 3 || disableTimeOutBtns;
+        }
+
+        function updateCardPlayers(teamId, cardType) {
+            const teamData = gameState[teamId];
+            const playerListElement = document.getElementById(`${teamId}${capitalizeFirstLetter(cardType)}Players`);
+            playerListElement.innerHTML = ''; // Clear current list
+            const playersWithCard = [];
+
+            for (const playerNum in teamData.players) {
+                if (teamData.players.hasOwnProperty(playerNum)) {
+                    if (cardType === 'yellow' && teamData.players[playerNum].yellow) {
+                        playersWithCard.push(playerNum);
+                    } else if (cardType === 'red' && teamData.players[playerNum].red) {
+                        playersWithCard.push(playerNum);
+                    } else if (cardType === 'blue' && teamData.players[playerNum].blue) { // NEW: Blue card check
+                        playersWithCard.push(playerNum);
+                    }
+                }
+            }
+
+            playersWithCard.forEach(playerNum => {
+                const playerSpan = document.createElement('span');
+                let className = '';
+                if (cardType === 'red') {
+                    className = 'red-card-player';
+                } else if (cardType === 'yellow') {
+                    className = 'yellow-card-player';
+                } else if (cardType === 'blue') { // NEW: Apply blue card style
+                    className = 'blue-card-player';
+                }
+                playerSpan.className = `card-player ${className}`;
+                playerSpan.textContent = playerNum;
+                playerListElement.appendChild(playerSpan);
+            });
+        }
+
+        function updateExclusionPlayers(teamId) {
+            const teamData = gameState[teamId];
+            const playerListElement = document.getElementById(`${teamId}ExclusionsPlayers`);
+            playerListElement.innerHTML = ''; 
+            const playersWithExclusionHistory = [];
+
+            for (const playerNum in teamData.players) {
+                if (teamData.players.hasOwnProperty(playerNum)) {
+                    // Include players who have had at least one exclusion AND do NOT have a red card or blue card
+                    // A player with a red/blue card is definitively out and their 2min penalty is handled by the red card logic.
+                    if (teamData.players[playerNum].exclusions > 0 && !teamData.players[playerNum].red && !teamData.players[playerNum].blue) {
+                        playersWithExclusionHistory.push(playerNum);
+                    }
+                }
+            }
+            
+            playersWithExclusionHistory.sort((a, b) => parseInt(a) - parseInt(b));
+
+            playersWithExclusionHistory.forEach(playerNum => {
+                const exclCount = teamData.players[playerNum].exclusions;
+                const playerSpan = document.createElement('span');
+                playerSpan.className = 'card-player excluded-player';
+                playerSpan.textContent = `${playerNum} (${exclCount})`;
+                playerListElement.appendChild(playerSpan);
+            });
+        }
+
+        // Update team colors and name text colors from settings
+        function updateTeamColorsDisplay() {
+            const team1Color = document.getElementById('team1ColorInput').value;
+            const team2Color = document.getElementById('team2ColorInput').value;
+            
+            document.getElementById('team1Card').style.borderLeftColor = team1Color;
+            document.getElementById('team2Card').style.borderLeftColor = team2Color;
+            document.getElementById('team1Name').style.color = team1Color;
+            document.getElementById('team2Name').style.color = team2Color;
+        }
+
+        // =========================================================
+        // 5. Game Actions (Score, Time Out, Sanctions)
+        // =========================================================
+        function changeScore(teamId, change) { 
+            if (gameState.isTimeOutActive) return; 
+
+            const teamData = teamId === 1 ? gameState.team1 : gameState.team2;
+            teamData.score = Math.max(0, teamData.score + change);
+            
+            if (change > 0) {
+                vibrate(100);
+                const teamName = document.getElementById(`team${teamId}Name`).textContent;
+                // Determine prefix based on vowel
+                const prefix = startsWithVowel(teamName) ? "l'" : "";
+                // Le score affiché dans le journal sera automatiquement le nouveau score grâce à la modification de addToJournal
+                addToJournal(`But pour ${prefix}${teamName}`); 
+            }
+            
+            updateDisplay();
+        }
+
+        function requestTimeOut(teamId) {
+            if (gameState.isTimeOutActive) {
+                alert("Un temps mort est déjà en cours.");
+                return;
+            }
+            const teamData = teamId === 1 ? gameState.team1 : gameState.team2;
+            if (teamData.timeOutsTaken >= 3) {
+                alert(`L'équipe ${document.getElementById(`team${teamId}Name`).textContent} a déjà utilisé tous ses temps morts.`);
+                return;
+            }
+
+            pauseTimer(); 
+            gameState.isTimeOutActive = true;
+            gameState.timeOutRemaining = 60;
+            teamData.timeOutsTaken++;
+            
+            const teamName = document.getElementById(`team${teamId}Name`).textContent;
+            const prefix = startsWithVowel(teamName) ? "l'" : "";
+            addToJournal(`Temps mort demandé par ${prefix}${teamName}`); 
+            vibrate(150);
+            updateDisplay(); 
+
+            timeOutInterval = setInterval(() => {
+                gameState.timeOutRemaining--;
+                if (gameState.timeOutRemaining <= 0) {
+                    clearInterval(timeOutInterval);
+                    gameState.isTimeOutActive = false;
+                    vibrate(250);
+                    addToJournal(`Fin du temps mort de ${prefix}${teamName}`); 
+                    updateDisplay(); 
+                } else {
+                    document.getElementById('overlayTimerDisplay').textContent = `TEMPS MORT: ${gameState.timeOutRemaining}`;
+                }
             }, 1000);
         }
 
-        /**
-         * Pauses the current timer.
-         */
-        function pauseTimer() {
-            clearInterval(gameState.timerInterval);
-            gameState.timerInterval = null;
-            gameState.isTimerRunning = false;
-            startPauseBtn.textContent = 'Démarrer';
-            startPauseBtn.style.backgroundColor = '#4CAF50'; // Green for Start
+        function giveYellowCard() {
+            const playerNum = document.getElementById('playerNumber').value;
+            if (!playerNum) {
+                alert('Veuillez saisir un numéro de joueur');
+                return;
+            }
 
-            addToJournal(`Chrono ${gameState.isBreak ? 'pause' : 'match'} mis en pause.`);
-            updateBanners(); // Display appropriate banner if paused manually
-            saveGameState();
+            const teamData = gameState.currentTeam === 1 ? gameState.team1 : gameState.team2;
+            // Get the actual team name for the journal entry
+            const teamName = document.getElementById(`team${gameState.currentTeam}Name`).textContent;
+            
+            if (!teamData.players[playerNum]) {
+                teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 }; // NEW: Add blue card property
+            }
+
+            if (teamData.players[playerNum].yellow) {
+                alert('Ce joueur a déjà un carton jaune');
+                closeModal(); 
+                return;
+            }
+
+            teamData.players[playerNum].yellow = true;
+            
+            addToJournal(`${teamName} - Joueur ${playerNum} : Carton jaune`);
+            updateDisplay();
+            closeModal();
         }
 
-        /**
-         * Advances to the next period or finishes the match.
-         */
-        function nextPeriod() {
-            vibrate();
-            pauseTimer(); // Always pause before moving to next period
+        function giveRedCard() {
+            const playerNum = document.getElementById('playerNumber').value;
+            if (!playerNum) {
+                alert('Veuillez saisir un numéro de joueur');
+                return;
+            }
 
-            if (gameState.currentPeriod < gameState.numPeriods) {
-                addToJournal(`Passage à la ${gameState.currentPeriod + 1}ème période. Fin de la ${gameState.currentPeriod}ère période.`);
-                
-                gameState.currentPeriod++;
-                gameState.mainTimer = 0; // Reset main timer for new period
-                
-                // Start a break before the new period
-                gameState.isBreak = true;
-                gameState.breakTimer = gameState.pauseDuration;
-                periodInfoDisplay.textContent = `PAUSE (Période ${gameState.currentPeriod - 1}/${gameState.numPeriods} terminée)`;
-                pauseBanner.classList.add('active');
-                startPauseBtn.textContent = 'Démarrer Pause';
-                startPauseBtn.style.backgroundColor = '#008CBA'; // Blue for Start Pause
-                addToJournal(`Début de la pause avant la ${gameState.currentPeriod}ème période.`);
+            const teamData = gameState.currentTeam === 1 ? gameState.team1 : gameState.team2;
+            // Get the actual team name for the journal entry
+            const teamName = document.getElementById(`team${gameState.currentTeam}Name`).textContent;
+            
+            if (!teamData.players[playerNum]) {
+                teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 }; // NEW: Add blue card property
+            }
 
+            if (teamData.players[playerNum].red) {
+                alert('Ce joueur a déjà un carton rouge');
+                closeModal(); 
+                return;
+            }
+
+            teamData.players[playerNum].red = true;
+
+            // Mark any active 2-min exclusions for this player as completed
+            for (let i = 0; i < teamData.exclusions.length; i++) {
+                if (teamData.exclusions[i] && teamData.exclusions[i].player == playerNum && !teamData.exclusions[i].isCompleted) {
+                    teamData.exclusions[i].isCompleted = true; 
+                    teamData.exclusions[i].returnedDisplayTimestamp = gameState.globalGameTime; // Use globalGameTime here
+                }
+            }
+            
+            // Handle the 2-minute exclusion for the red card
+            let slotIndex = -1;
+            // Find an available exclusion slot (null or completed and displayed)
+            for (let i = 0; i < 3; i++) {
+                if (!teamData.exclusions[i] || (teamData.exclusions[i].isCompleted && (gameState.globalGameTime - teamData.exclusions[i].returnedDisplayTimestamp) >= gameState.returnedDisplayDuration)) { // Use globalGameTime here
+                    slotIndex = i;
+                    break;
+                }
+            }
+
+            if (slotIndex !== -1) {
+                // Add a new exclusion for the red card duration
+                teamData.exclusions[slotIndex] = {
+                    player: playerNum,
+                    startTime: gameState.globalGameTime, // Use globalGameTime here
+                    isCompleted: false,
+                    returnedDisplayTimestamp: null,
+                    isRedCardExclusion: true // Mark this exclusion as due to a red card
+                };
+                // Increment player's exclusion count (even if direct red)
+                teamData.players[playerNum].exclusions++; 
+                addToJournal(`${teamName} - Joueur ${playerNum} : Carton rouge (Exclusion de 2min pour l'équipe)`);
             } else {
-                addToJournal('Match Terminé.');
-                gameState.mainTimer = gameState.periodDuration; // Ensure timer shows full duration
-                periodInfoDisplay.textContent = 'Match Terminé';
-                startPauseBtn.textContent = 'Match Terminé';
-                startPauseBtn.disabled = true;
-                nextPeriodBtn.disabled = true;
-                gameState.isTimerRunning = false;
-                pauseBanner.classList.remove('active'); // No pause banner for match end
+                 // If no slot available, just log the red card without visible exclusion on the board
+                addToJournal(`${teamName} - Joueur ${playerNum} : Carton rouge (Pas de slot d'exclusion disponible, mais le joueur est exclu définitivement)`);
             }
+
             updateDisplay();
-            saveGameState();
+            closeModal();
         }
 
-        /**
-         * Resets the main timer to 0 for the current period.
-         */
-        function resetMainTimer() {
-            vibrate();
-            pauseTimer();
-            gameState.mainTimer = 0;
-            addToJournal(`Chrono principal réinitialisé pour la ${gameState.currentPeriod}ème période.`);
-            updateDisplay();
-            saveGameState();
-        }
-
-        // =========================================================
-        // 5. Score and Timeout Logic
-        // =========================================================
-
-        /**
-         * Adjusts the score for a given team.
-         * @param {number} teamId - 1 for team1, 2 for team2.
-         * @param {number} delta - +1 to increment, -1 to decrement.
-         */
-        function adjustScore(teamId, delta) {
-            vibrate();
-            const team = teamId === 1 ? gameState.team1 : gameState.team2;
-            const teamName = teamId === 1 ? gameState.team1.name : gameState.team2.name;
-            const oldScore = team.score;
-            team.score = Math.max(0, team.score + delta); // Score cannot go below 0
-            if (delta > 0) {
-                addToJournal(`But pour ${teamName} (${team.score} - ${teamId === 1 ? gameState.team2.score : gameState.team1.score}).`);
-            } else if (team.score < oldScore) {
-                 addToJournal(`Score de ${teamName} diminué (${team.score} - ${teamId === 1 ? gameState.team2.score : gameState.team1.score}).`);
+        // NEW: Function to give a Blue Card
+        function giveBlueCard() {
+            const playerNum = document.getElementById('playerNumber').value;
+            if (!playerNum) {
+                alert('Veuillez saisir un numéro de joueur');
+                return;
             }
+
+            const teamData = gameState.currentTeam === 1 ? gameState.team1 : gameState.team2;
+            const teamName = document.getElementById(`team${gameState.currentTeam}Name`).textContent; // Get actual team name
+
+            if (!teamData.players[playerNum]) {
+                teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 };
+            }
+
+            // A blue card implies a red card if not already given
+            if (!teamData.players[playerNum].red) {
+                alert(`Le joueur ${playerNum} n'avait pas de carton rouge. Un carton rouge sera automatiquement attribué avant le carton bleu.`);
+                giveRedCard(); // Call red card function, which handles the 2min exclusion and journal entry
+                // Re-fetch player data after red card might have updated it
+                if (!teamData.players[playerNum]) { // Re-check in case redCard closed modal
+                    teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 };
+                }
+            }
+
+            if (teamData.players[playerNum].blue) {
+                alert('Ce joueur a déjà un carton bleu.');
+                closeModal();
+                return;
+            }
+
+            teamData.players[playerNum].blue = true;
+            
+            addToJournal(`${teamName} - Joueur ${playerNum} : Carton Bleu (Rapport disciplinaire)`);
             updateDisplay();
-            saveGameState();
+            closeModal();
         }
 
-        /**
-         * Registers a timeout for a given team.
-         * @param {number} teamId - 1 for team1, 2 for team2.
-         */
-        function registerTimeout(teamId) {
-            vibrate();
-            const team = teamId === 1 ? gameState.team1 : gameState.team2;
-            const teamName = teamId === 1 ? gameState.team1.name : gameState.team2.name;
 
-            if (team.timeoutsTaken < 3) {
-                pauseTimer(); // Pause main timer for timeout
-                gameState.isPaused = true;
-                team.timeoutsTaken++;
-                addToJournal(`Temps mort demandé par ${teamName}. ${team.timeoutsTaken}/3 pris.`);
+        function giveExclusion() {
+            const playerNum = document.getElementById('playerNumber').value;
+            if (!playerNum) {
+                alert('Veuillez saisir un numéro de joueur');
+                return;
+            }
+
+            const teamData = gameState.currentTeam === 1 ? gameState.team1 : gameState.team2;
+            const teamName = document.getElementById(`team${gameState.currentTeam}Name`).textContent; // Get actual team name
+            
+            if (!teamData.players[playerNum]) {
+                teamData.players[playerNum] = { yellow: false, red: false, blue: false, exclusions: 0 }; // NEW: Add blue card property
+            }
+
+            if (teamData.players[playerNum].red || teamData.players[playerNum].blue) { // Check for blue card too
+                alert('Ce joueur a un carton rouge ou bleu et est déjà exclu définitivement.');
+                closeModal(); 
+                return;
+            }
+
+            if (teamData.players[playerNum].exclusions >= 2) { 
+                alert(`Le joueur ${playerNum} de l'${teamName} reçoit sa 3ème exclusion et un carton rouge !`);
+                teamData.players[playerNum].red = true;
+                // Mark any active 2-min exclusions for this player as completed
+                for (let i = 0; i < teamData.exclusions.length; i++) {
+                    if (teamData.exclusions[i] && teamData.exclusions[i].player == playerNum && !teamData.exclusions[i].isCompleted) {
+                        teamData.exclusions[i].isCompleted = true;
+                        teamData.exclusions[i].returnedDisplayTimestamp = gameState.globalGameTime; // Use globalGameTime here
+                    }
+                }
+                addToJournal(`${teamName} - Joueur ${playerNum} : 3ème exclusion et Carton Rouge !`);
                 updateDisplay();
-            } else {
-                alert(`L'équipe ${teamName} n'a plus de temps morts disponibles.`);
-                addToJournal(`Tentative de temps mort par ${teamName} (aucun disponible).`);
-            }
-            saveGameState();
-        }
-
-        // =========================================================
-        // 6. Sanction Logic (Cards & Exclusions)
-        // =========================================================
-
-        let currentSanctionTeamId = null; // Store which team is active for player modal
-
-        /**
-         * Opens the player modal to apply a sanction.
-         * @param {number} teamId - 1 for team1, 2 for team2.
-         * @param {string} sanctionType - 'yellow', 'two_min', 'red', 'blue'.
-         */
-        function openPlayerModal(teamId, sanctionType) {
-            currentSanctionTeamId = teamId;
-            playerModal.classList.add('active');
-            playerNumberInput.value = ''; // Clear previous input
-
-            // Hide/show sanction buttons based on the requested sanctionType
-            yellowCardBtn.style.display = 'none';
-            twoMinBtn.style.display = 'none';
-            redCardBtn.style.display = 'none';
-            blueCardBtn.style.display = 'none';
-
-            playerModalTitle.textContent = `Appliquer ${getSanctionDisplayName(sanctionType)} pour ${teamId === 1 ? gameState.team1.name : gameState.team2.name}`;
-
-            if (sanctionType === 'yellow') yellowCardBtn.style.display = 'inline-block';
-            if (sanctionType === 'two_min') twoMinBtn.style.display = 'inline-block';
-            if (sanctionType === 'red') redCardBtn.style.display = 'inline-block';
-            if (sanctionType === 'blue') blueCardBtn.style.display = 'inline-block';
-        }
-
-        /**
-         * Gets a display name for a sanction type.
-         * @param {string} sanctionType - 'yellow', 'two_min', 'red', 'blue'.
-         * @returns {string} The display name.
-         */
-        function getSanctionDisplayName(sanctionType) {
-            switch (sanctionType) {
-                case 'yellow': return 'un Carton Jaune';
-                case 'two_min': return 'une Exclusion de 2 minutes';
-                case 'red': return 'un Carton Rouge';
-                case 'blue': return 'un Carton Bleu';
-                default: return 'une sanction';
-            }
-        }
-
-        /**
-         * Applies the selected sanction to the specified player.
-         * @param {string} type - 'yellow', 'two_min', 'red', 'blue'.
-         */
-        function applySanction(type) {
-            const playerNum = parseInt(playerNumberInput.value, 10);
-            if (isNaN(playerNum) || playerNum <= 0) {
-                alert('Veuillez entrer un numéro de joueur valide.');
+                closeModal();
                 return;
             }
 
-            vibrate();
-            const team = currentSanctionTeamId === 1 ? gameState.team1 : gameState.team2;
-            const teamName = currentSanctionTeamId === 1 ? gameState.team1.name : gameState.team2.name;
-            const timeApplied = formatTime(gameState.mainTimer);
-
-            switch (type) {
-                case 'yellow':
-                    if (!team.yellowCards.includes(playerNum)) {
-                        team.yellowCards.push(playerNum);
-                        addToJournal(`Carton jaune pour le joueur ${playerNum} de ${teamName} à ${timeApplied}.`);
-                    } else {
-                        alert(`Le joueur ${playerNum} de ${teamName} a déjà un carton jaune.`);
-                    }
+            let slotIndex = -1;
+            // Find a slot that is null (empty) or has a completed exclusion that has finished its "returned" display
+            for (let i = 0; i < 3; i++) {
+                if (!teamData.exclusions[i] || (teamData.exclusions[i].isCompleted && (gameState.globalGameTime - teamData.exclusions[i].returnedDisplayTimestamp) >= gameState.returnedDisplayDuration)) { // Use globalGameTime here
+                    slotIndex = i;
                     break;
-                case 'two_min':
-                    addTwoMinuteExclusion(currentSanctionTeamId, playerNum);
-                    addToJournal(`Exclusion de 2 minutes pour le joueur ${playerNum} de ${teamName} à ${timeApplied}.`);
-                    break;
-                case 'red':
-                    if (!team.redCards.includes(playerNum)) {
-                        team.redCards.push(playerNum);
-                        addToJournal(`Carton rouge pour le joueur ${playerNum} de ${teamName} à ${timeApplied}.`);
-                    } else {
-                        alert(`Le joueur ${playerNum} de ${teamName} a déjà un carton rouge.`);
-                    }
-                    break;
-                case 'blue':
-                    if (!team.blueCards.includes(playerNum)) {
-                        team.blueCards.push(playerNum);
-                        addToJournal(`Carton bleu pour le joueur ${playerNum} de ${teamName} à ${timeApplied}.`);
-                    } else {
-                        alert(`Le joueur ${playerNum} de ${teamName} a déjà un carton bleu.`);
-                    }
-                    break;
+                }
             }
-            closeModal();
-            updateDisplay();
-            saveGameState();
-        }
 
-        /**
-         * Adds a 2-minute exclusion for a player.
-         * @param {number} teamId - 1 for team1, 2 for team2.
-         * @param {number} playerNum - The player number.
-         */
-        function addTwoMinuteExclusion(teamId, playerNum) {
-            const team = teamId === 1 ? gameState.team1 : gameState.team2;
-            // Check if player is already under 2-min exclusion
-            const existingExclusion = team.exclusions.find(ex => ex.player === playerNum && ex.status === 'active');
-            if (existingExclusion) {
-                alert(`Le joueur ${playerNum} de ${team.name} est déjà en cours d'exclusion.`);
+            if (slotIndex === -1) {
+                alert('Toutes les exclusions sont déjà en cours pour cette équipe. (Max 3 actives simultanément)');
+                closeModal(); 
                 return;
             }
 
-            const exclusion = {
+            teamData.exclusions[slotIndex] = {
                 player: playerNum,
-                remainingTime: gameState.exclusionDuration,
-                duration: gameState.exclusionDuration, // Store original duration
-                status: 'active', // 'active', 'inactive' (during pause), 'finished'
-                reEnterTimer: 0 // Used for "Rentrée" display
+                startTime: gameState.globalGameTime, // Use globalGameTime here
+                isCompleted: false,
+                returnedDisplayTimestamp: null
             };
-            team.exclusions.push(exclusion);
+            teamData.players[playerNum].exclusions++; 
 
-            // Update exclusion timers immediately
-            updateExclusionTimers();
-        }
+            const exclusionElement = document.getElementById(`team${gameState.currentTeam}Ex${slotIndex + 1}`);
+            exclusionElement.classList.remove('inactive', 'returned'); 
+            exclusionElement.classList.add('active'); 
+            exclusionElement.innerHTML = `J${playerNum} ${formatTime(gameState.exclusionDuration)}`;
 
-        /**
-         * Updates all active 2-minute exclusion timers.
-         */
-        function updateExclusionTimers() {
-            [gameState.team1, gameState.team2].forEach(team => {
-                team.exclusions.forEach(exclusion => {
-                    if (exclusion.status === 'active') {
-                        if (gameState.isTimerRunning && !gameState.isBreak) { // Only count down if main timer is running and not in break
-                            exclusion.remainingTime--;
-                        }
-
-                        if (exclusion.remainingTime <= 0) {
-                            exclusion.remainingTime = 0;
-                            if (exclusion.status !== 'finished') { // Only log once
-                                exclusion.status = 'finished';
-                                exclusion.reEnterTimer = gameState.reEnterDisplayDuration; // Start "Rentrée" timer
-                                addToJournal(`Le joueur ${exclusion.player} de ${team.name} a purgé sa peine de 2 minutes.`);
-                                vibrate();
-                            }
-                        }
-                    }
-
-                    if (exclusion.status === 'finished' && exclusion.reEnterTimer > 0) {
-                        if (gameState.isTimerRunning && !gameState.isBreak) {
-                            exclusion.reEnterTimer--;
-                        }
-                    }
-                });
-            });
-            renderExclusionTimers();
-        }
-
-
-        /**
-         * Renders the 2-minute exclusion timers in the UI.
-         */
-        function renderExclusionTimers() {
-            [
-                { team: gameState.team1, display: team1SanctionsDisplay },
-                { team: gameState.team2, display: team2SanctionsDisplay }
-            ].forEach(({ team, display }) => {
-                display.innerHTML = ''; // Clear current display
-
-                // Sort exclusions by remaining time (ascending) and then player number
-                const sortedExclusions = [...team.exclusions].sort((a, b) => {
-                    if (a.status === 'finished' && b.status !== 'finished') return 1;
-                    if (a.status !== 'finished' && b.status === 'finished') return -1;
-                    return a.remainingTime - b.remainingTime || a.player - b.player;
-                });
-
-
-                sortedExclusions.forEach(ex => {
-                    const exclusionDiv = document.createElement('div');
-                    exclusionDiv.className = 'two-min-timer';
-                    if (!gameState.isTimerRunning || gameState.isBreak) {
-                        exclusionDiv.classList.add('inactive');
-                    } else if (ex.status === 'finished') {
-                        exclusionDiv.classList.add('finished');
-                    } else {
-                        exclusionDiv.classList.add('active');
-                    }
-                    
-                    const playerSpan = document.createElement('span');
-                    playerSpan.className = 'player-num';
-                    playerSpan.textContent = `#${ex.player}`;
-                    exclusionDiv.appendChild(playerSpan);
-
-                    const timerValueSpan = document.createElement('span');
-                    timerValueSpan.className = 'timer-value';
-
-                    if (ex.status === 'finished') {
-                        if (ex.reEnterTimer > 0) {
-                             timerValueSpan.textContent = `Rentré (${ex.reEnterTimer}s)`;
-                        } else {
-                            timerValueSpan.textContent = 'Rentré';
-                            exclusionDiv.style.opacity = 0.5; // Dim finished and cleared timers
-                        }
-                    } else {
-                        timerValueSpan.textContent = formatTime(ex.remainingTime);
-                    }
-                    exclusionDiv.appendChild(timerValueSpan);
-                    display.appendChild(exclusionDiv);
-                });
-            });
-        }
-
-
-        /**
-         * Removes a sanction (only yellow, red, blue cards for now).
-         * For 2-min, the timer runs out.
-         * @param {number} teamId - The team ID.
-         * @param {string} type - 'yellow', 'red', 'blue'.
-         * @param {number} playerNum - The player number to remove.
-         */
-        // This function is not currently hooked to the UI but could be for future features.
-        // function removeSanction(teamId, type, playerNum) {
-        //     const team = teamId === 1 ? gameState.team1 : gameState.team2;
-        //     let index;
-        //     switch (type) {
-        //         case 'yellow':
-        //             index = team.yellowCards.indexOf(playerNum);
-        //             if (index > -1) team.yellowCards.splice(index, 1);
-        //             break;
-        //         case 'red':
-        //             index = team.redCards.indexOf(playerNum);
-        //             if (index > -1) team.redCards.splice(index, 1);
-        //             break;
-        //         case 'blue':
-        //             index = team.blueCards.indexOf(playerNum);
-        //             if (index > -1) team.blueCards.splice(index, 1);
-        //             break;
-        //     }
-        //     addToJournal(`Sanction (${type}) retirée pour joueur ${playerNum} de ${team.name}.`);
-        //     updateDisplay();
-        //     saveGameState();
-        // }
-
-
-        // =========================================================
-        // 7. Modal Control
-        // =========================================================
-
-        /**
-         * Opens a specified modal.
-         * @param {HTMLElement} modalElement - The modal DOM element to open.
-         */
-        function openModal(modalElement) {
-            modalElement.classList.add('active');
-            // Check if it's the journal modal to refresh its content
-            if (modalElement === journalModal) {
-                updateJournalDisplay();
-            } else if (modalElement === settingsModal) {
-                loadSettingsIntoModal();
-            }
-        }
-
-        /**
-         * Closes a specified modal or the currently active one.
-         * @param {HTMLElement} [modalElement] - Optional. The modal DOM element to close.
-         * If not provided, finds the active modal.
-         */
-        function closeModal(modalElement = null) {
-            if (!modalElement) {
-                modalElement = document.querySelector('.modal.active');
-            }
-            if (modalElement) {
-                modalElement.classList.remove('active');
-            }
-        }
-
-        // =========================================================
-        // 8. Journal Management
-        // =========================================================
-
-        /**
-         * Updates the journal display in the modal.
-         */
-        function updateJournalDisplay() {
-            journalEntriesDisplay.innerHTML = '';
-            // Display entries in reverse chronological order
-            [...gameState.journal].reverse().forEach(entry => {
-                const entryDiv = document.createElement('div');
-                entryDiv.className = 'journal-entry';
-                entryDiv.innerHTML = `[${entry.displayTime}] ${entry.entry}`;
-                journalEntriesDisplay.appendChild(entryDiv);
-            });
-        }
-
-        /**
-         * Saves the journal to a text file.
-         */
-        function saveJournal() {
-            const fileName = `Journal_Match_${gameState.team1.name}_vs_${gameState.team2.name}_${new Date().toISOString().slice(0, 10)}.txt`;
-            const header = `--- Journal du Match ${gameState.team1.name} vs ${gameState.team2.name} ---\n`;
-            const initialScore = `Score initial: ${gameState.team1.score} - ${gameState.team2.score}\n`;
-            const finalScore = `Score final: ${gameState.team1.score} - ${gameState.team2.score}\n`;
-            
-            const journalContent = gameState.journal.map(entry => {
-                // Remove HTML tags for the text file
-                const cleanedEntry = entry.entry.replace(/<[^>]*>/g, ''); 
-                return `[${entry.displayTime}] ${cleanedEntry}`;
-            }).join('\n');
-
-            const fullContent = `${header}\n${journalContent}\n\n${finalScore}`;
-            
-            const blob = new Blob([fullContent], { type: 'text/plain;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            addToJournal('Journal sauvegardé en fichier texte.');
-        }
-
-        /**
-         * Clears all entries from the journal.
-         */
-        function clearJournal() {
-            if (confirm('Êtes-vous sûr de vouloir vider le journal ? Cette action est irréversible.')) {
-                gameState.journal = [];
-                updateJournalDisplay();
-                addToJournal('Journal vidé.');
-                saveGameState();
-            }
-        }
-
-        // =========================================================
-        // 9. Settings Management
-        // =========================================================
-
-        /**
-         * Loads current game state settings into the settings modal.
-         */
-        function loadSettingsIntoModal() {
-            team1NameSetting.value = gameState.team1.name;
-            team1ColorSetting.value = gameState.team1.color;
-            team2NameSetting.value = gameState.team2.name;
-            team2ColorSetting.value = gameState.team2.color;
-            numPeriodsSetting.value = gameState.numPeriods;
-            periodDurationMin.value = Math.floor(gameState.periodDuration / 60);
-            periodDurationSec.value = gameState.periodDuration % 60;
-            pauseDurationMin.value = Math.floor(gameState.pauseDuration / 60);
-            pauseDurationSec.value = gameState.pauseDuration % 60;
-            exclusionDurationSetting.value = gameState.exclusionDuration;
-            reEnterDisplayDurationSetting.value = gameState.reEnterDisplayDuration;
-        }
-
-        /**
-         * Saves settings from the modal to the game state.
-         */
-        function saveSettings() {
-            vibrate();
-            const oldTeam1Name = gameState.team1.name;
-            const oldTeam2Name = gameState.team2.name;
-
-            gameState.team1.name = team1NameSetting.value;
-            gameState.team1.color = rgbToHex(team1ColorSetting.value);
-            gameState.team2.name = team2NameSetting.value;
-            gameState.team2.color = rgbToHex(team2ColorSetting.value);
-            
-            // Update journal entries with new team names
-            gameState.journal.forEach(entry => {
-                entry.entry = entry.entry
-                    .replace(new RegExp(escapeRegExp(oldTeam1Name), 'g'), `<span style="color:${gameState.team1.color}; font-weight:bold;">${gameState.team1.name}</span>`)
-                    .replace(new RegExp(escapeRegExp(oldTeam2Name), 'g'), `<span style="color:${gameState.team2.color}; font-weight:bold;">${gameState.team2.name}</span>`);
-            });
-
-
-            gameState.numPeriods = parseInt(numPeriodsSetting.value, 10);
-            gameState.periodDuration = (parseInt(periodDurationMin.value, 10) * 60) + parseInt(periodDurationSec.value, 10);
-            gameState.pauseDuration = (parseInt(pauseDurationMin.value, 10) * 60) + parseInt(pauseDurationSec.value, 10);
-            gameState.exclusionDuration = parseInt(exclusionDurationSetting.value, 10);
-            gameState.reEnterDisplayDuration = parseInt(reEnterDisplayDurationSetting.value, 10);
-
-            updateTeamColorsDisplay(); // Update team name colors immediately
+            addToJournal(`${teamName} - Joueur ${playerNum} : Exclusion 2 minutes (Excl. #${teamData.players[playerNum].exclusions})`);
             updateDisplay();
             closeModal();
-            addToJournal('Paramètres du match mis à jour.');
-            saveGameState();
-        }
-
-        /**
-         * Updates the team name colors in the main display based on saved settings.
-         */
-        function updateTeamColorsDisplay() {
-            team1NameDisplay.style.color = gameState.team1.color;
-            team2NameDisplay.style.color = gameState.team2.color;
-        }
-
-
-        // =========================================================
-        // 10. Reset Game State
-        // =========================================================
-
-        /**
-         * Resets the entire game state to initial values.
-         */
-        function resetGame() {
-            vibrate();
-            pauseTimer(); // Ensure timer is stopped
-            clearInterval(gameState.timerInterval);
-            gameState.timerInterval = null;
-
-            gameState = {
-                mainTimer: 0,
-                timerInterval: null,
-                isTimerRunning: false,
-                currentPeriod: 1,
-                numPeriods: parseInt(numPeriodsSetting.value, 10) || 2, // Use setting default
-                periodDuration: (parseInt(periodDurationMin.value, 10) * 60) + parseInt(periodDurationSec.value, 10) || 30 * 60,
-                pauseDuration: (parseInt(pauseDurationMin.value, 10) * 60) + parseInt(pauseDurationSec.value, 10) || 10 * 60,
-                isPaused: false,
-                isBreak: false,
-                breakTimer: 0,
-                team1: {
-                    name: team1NameSetting.value || "Équipe 1",
-                    score: 0,
-                    timeoutsTaken: 0,
-                    yellowCards: [],
-                    redCards: [],
-                    blueCards: [],
-                    exclusions: [],
-                    color: team1ColorSetting.value || "#00BFFF"
-                },
-                team2: {
-                    name: team2NameSetting.value || "Équipe 2",
-                    score: 0,
-                    timeoutsTaken: 0,
-                    yellowCards: [],
-                    redCards: [],
-                    blueCards: [],
-                    exclusions: [],
-                    color: team2ColorSetting.value || "#FF4500"
-                },
-                journal: [],
-                exclusionDuration: parseInt(exclusionDurationSetting.value, 10) || 120,
-                reEnterDisplayDuration: parseInt(reEnterDisplayDurationSetting.value, 10) || 10
-            };
-
-            // Re-enable buttons
-            startPauseBtn.disabled = false;
-            startPauseBtn.textContent = 'Démarrer';
-            startPauseBtn.style.backgroundColor = '#4CAF50';
-            nextPeriodBtn.disabled = false;
-
-            addToJournal('Match réinitialisé.');
-            updateDisplay(); // Refresh UI with new state
-            saveGameState(); // Save initial state
         }
 
         // =========================================================
-        // 11. Full Screen Mode
+        // 6. Modal Functions
         // =========================================================
+        function openPlayerModal(team) {
+            gameState.currentTeam = team;
+            document.getElementById('modalTitle').textContent = `${document.getElementById(`team${team}Name`).textContent} - Gestion des joueurs`;
+            document.getElementById('playerNumber').value = '';
+            document.getElementById('playerNumber').focus();
+            document.getElementById('playerModal').style.display = 'block';
+        }
+
+        function openJournalModal() {
+            updateJournalDisplay(); 
+            document.getElementById('journalModal').style.display = 'block';
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settingsModal').style.display = 'block';
+            document.getElementById('team1NameInput').value = document.getElementById('team1Name').textContent;
+            document.getElementById('team2NameInput').value = document.getElementById('team2Name').textContent;
+            
+            const team1BorderColor = window.getComputedStyle(document.getElementById('team1Card')).borderLeftColor;
+            const team2BorderColor = window.getComputedStyle(document.getElementById('team2Card')).borderLeftColor;
+            document.getElementById('team1ColorInput').value = rgbToHex(team1BorderColor) || '#0066cc'; 
+            document.getElementById('team2ColorInput').value = rgbToHex(team2BorderColor) || '#cc0000'; 
+
+            document.getElementById('periodDurationInput').value = gameState.periodDuration / 60;
+            document.getElementById('pauseDurationInput').value = gameState.pauseDuration / 60;
+            document.getElementById('numberOfPeriodsInput').value = gameState.numberOfPeriods; // Load current value
+            document.getElementById('mainTimerInput').value = formatTime(gameState.mainTimer);
+            document.getElementById('exclusionDurationInput').value = parseInt(document.getElementById('exclusionDurationInput').value); // Ensure it's number
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        // =========================================================
+        // 7. Full Screen Logic (NEW)
+        // =========================================================
+        function enterFullScreen() {
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) {
+                docEl.requestFullscreen();
+            } else if (docEl.mozRequestFullScreen) { /* Firefox */
+                docEl.mozRequestFullScreen();
+            } else if (docEl.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                docEl.webkitRequestFullscreen();
+            } else if (docEl.msRequestFullscreen) { /* IE/Edge */
+                docEl.msRequestFullscreen();
+            }
+        }
+
+        function exitFullScreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { /* Firefox */
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE/Edge */
+                document.msExitFullscreen();
+            }
+        }
+
         function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.error(`Erreur pour le mode plein écran: ${err.message} (${err.name})`);
-                });
+            if (!document.fullscreenElement &&    // standard
+                !document.mozFullScreenElement && // Firefox
+                !document.webkitFullscreenElement && // Chrome, Safari and Opera
+                !document.msFullscreenElement) {  // IE/Edge
+                enterFullScreen();
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                exitFullScreen();
             }
         }
 
         // =========================================================
-        // 12. Local Storage (Persistance)
+        // 8. Data Persistence (Save/Reset)
         // =========================================================
-
-        const LOCAL_STORAGE_KEY = 'handballRefereeGameState';
-
-        /**
-         * Saves the current game state to Local Storage.
-         */
-        function saveGameState() {
-            try {
-                // Remove timerInterval and exclusion timerIds as they cannot be serialized
-                const stateToSave = JSON.parse(JSON.stringify(gameState)); // Deep copy
-                stateToSave.timerInterval = null; // Clear interval ID
-                stateToSave.team1.exclusions.forEach(ex => ex.timerId = null);
-                stateToSave.team2.exclusions.forEach(ex => ex.timerId = null);
-
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stateToSave));
-                // console.log('Game state saved.'); // For debugging
-            } catch (e) {
-                console.error('Erreur lors de la sauvegarde de l\'état du jeu:', e);
-            }
+        function showResetModal() {
+            document.getElementById('resetModal').style.display = 'block';
         }
 
-        /**
-         * Loads the game state from Local Storage.
-         */
-        function loadGameState() {
-            try {
-                const savedState = localStorage.getItem(LOCAL_STORAGE_KEY);
-                if (savedState) {
-                    const loadedState = JSON.parse(savedState);
-                    // Ensure functions/non-serializable parts are not overwritten if they exist
-                    // Merge properties carefully, do not just assign directly
-                    Object.assign(gameState.team1, loadedState.team1);
-                    Object.assign(gameState.team2, loadedState.team2);
-                    
-                    gameState.mainTimer = loadedState.mainTimer || 0;
-                    gameState.isTimerRunning = loadedState.isTimerRunning || false;
-                    gameState.currentPeriod = loadedState.currentPeriod || 1;
-                    gameState.numPeriods = loadedState.numPeriods || 2;
-                    gameState.periodDuration = loadedState.periodDuration || 30 * 60;
-                    gameState.pauseDuration = loadedState.pauseDuration || 10 * 60;
-                    gameState.isPaused = loadedState.isPaused || false;
-                    gameState.isBreak = loadedState.isBreak || false;
-                    gameState.breakTimer = loadedState.breakTimer || 0;
-                    gameState.journal = loadedState.journal || [];
-                    gameState.exclusionDuration = loadedState.exclusionDuration || 120;
-                    gameState.reEnterDisplayDuration = loadedState.reEnterDisplayDuration || 10;
+        function confirmReset() {
+            performReset();
+            closeModal();
+        }
 
-                    // Re-start main timer if it was running
-                    if (gameState.isTimerRunning) {
-                        startTimer();
+        function saveBeforeReset() {
+            saveJournal(); // Save journal before resetting
+            performReset();
+            closeModal();
+        }
+
+        function performReset() {
+            pauseTimer();
+            clearInterval(timeOutInterval); // Clear any active timeout interval
+            
+            // Reset all game state to initial values
+            gameState.mainTimer = 0;
+            gameState.globalGameTime = 0; // NEW: Reset global game time on full reset
+            gameState.period = 1;
+            gameState.breakTimer = 0;
+            gameState.isRunning = false;
+            gameState.isTimeOutActive = false;
+            gameState.timeOutRemaining = 0;
+            gameState.team1 = { score: 0, yellow: 0, red: 0, blue: 0, timeOutsTaken: 0, players: {}, exclusions: [null, null, null] }; // NEW: Reset blue cards
+            gameState.team2 = { score: 0, yellow: 0, red: 0, blue: 0, timeOutsTaken: 0, players: {}, exclusions: [null, null, null] }; // NEW: Reset blue cards
+            gameState.journal = [];
+            
+            updateDisplay(); // Update UI after reset
+            addToJournal('Début du match'); // Add initial journal entry
+        }
+
+        function saveSettings() {
+            // Update team names on display
+            document.getElementById('team1Name').textContent = document.getElementById('team1NameInput').value;
+            document.getElementById('team2Name').textContent = document.getElementById('team2NameInput').value;
+            
+            // Update team colors on display and save them
+            updateTeamColorsDisplay(); 
+            
+            // Update game duration settings
+            gameState.numberOfPeriods = parseInt(document.getElementById('numberOfPeriodsInput').value); // Save number of periods
+            gameState.periodDuration = parseInt(document.getElementById('periodDurationInput').value) * 60;
+            gameState.pauseDuration = parseInt(document.getElementById('pauseDurationInput').value) * 60;
+            gameState.exclusionDuration = parseInt(document.getElementById('exclusionDurationInput').value); 
+
+            const mainTimerInput = document.getElementById('mainTimerInput').value;
+            const timeParts = mainTimerInput.split(':');
+            if (timeParts.length === 2 && !isNaN(timeParts[0]) && !isNaN(timeParts[1])) {
+                const newMinutes = parseInt(timeParts[0]);
+                const newSeconds = parseInt(timeParts[1]);
+                if (newMinutes >= 0 && newSeconds >= 0 && newSeconds < 60) {
+                    const newMainTimer = (newMinutes * 60) + newSeconds;
+                    if (newMainTimer !== gameState.mainTimer) {
+                        // When adjusting main timer, calculate difference to apply to globalGameTime
+                        const mainTimerDiff = newMainTimer - gameState.mainTimer;
+                        gameState.mainTimer = newMainTimer;
+                        // Adjust globalGameTime only if in active playing periods
+                        if (gameState.period % 2 !== 0) { // Only adjust if in a playing period
+                            gameState.globalGameTime += mainTimerDiff;
+                            // Ensure globalGameTime doesn't go negative if mainTimer is set to a much smaller value
+                            gameState.globalGameTime = Math.max(0, gameState.globalGameTime);
+                        }
+                        
+                        addToJournal(`Chrono principal ajusté manuellement à ${formatTime(gameState.mainTimer)}`);
+                        updateDisplay(); // Update display immediately after adjustment
                     }
-                    // Re-start exclusion timers logic (they are handled by the main interval)
-                    renderExclusionTimers();
-
-                    console.log('Game state loaded.');
-                    return true;
+                } else {
+                    alert('Format de temps principal invalide (MM:SS, secondes entre 0 et 59). Le temps n\'a pas été modifié.');
                 }
-            } catch (e) {
-                console.error('Erreur lors du chargement de l\'état du jeu:', e);
+            } else {
+                alert('Format de temps principal invalide (MM:SS). Le temps n\'a pas été modifié.');
             }
-            return false;
+            
+            closeModal();
         }
 
-        /**
-         * Clears the saved game state from Local Storage.
-         */
-        function clearSavedGameState() {
-            localStorage.removeItem(LOCAL_STORAGE_KEY);
-            console.log('Game state cleared from Local Storage.');
+        function saveJournal() {
+            updateJournalDisplay(); // Ensure the display is updated before saving
+            const now = new Date();
+            const filename = `Match_${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}_${now.getHours().toString().padStart(2,'0')}-${now.getMinutes().toString().padStart(2,'0')}.txt`;
+            
+            const team1Name = document.getElementById('team1Name').textContent;
+            const team2Name = document.getElementById('team2Name').textContent;
+            
+            let content = `Match du ${now.toLocaleDateString('fr-FR')} - ${now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}\n`;
+            content += `Équipes: ${team1Name} vs ${team2Name}\n`;
+            content += `Score final: ${gameState.team1.score} - ${gameState.team2.score}\n\n`;
+            content += `=== Journal du match ===\n`;
+            // Remove HTML tags for saving to plain text file
+            content += gameState.journal.map(entry => {
+                const parts = entry.split(']');
+                return `${parts[0]}]${parts[1].replace(/<[^>]*>/g, '')}`; // Remove HTML from the message part
+            }).join('\n');
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Journal sauvegardé avec succès !');
         }
 
-
         // =========================================================
-        // 13. Wake Lock API (Prevent Screen Sleep) - NEW
+        // 9. Event Listener Initialization
         // =========================================================
-        let wakeLock = null; // Variable to store the Wake Lock object
-
-        // Function to request a Wake Lock
-        const requestWakeLock = async () => {
-            if ('wakeLock' in navigator) {
-                try {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Wake Lock écran activé.');
-                    wakeLock.addEventListener('release', () => {
-                        console.log('Wake Lock écran relâché.');
-                    });
-                } catch (err) {
-                    console.error(`Erreur de Wake Lock: ${err.name}, ${err.message}`);
-                }
-            }
-        };
-
-        // Function to release the Wake Lock
-        const releaseWakeLock = () => {
-            if (wakeLock !== null) {
-                wakeLock.release();
-                wakeLock = null;
-                console.log('Wake Lock écran relâché (manuel).');
-            }
-        };
-
-
-        // =========================================================
-        // 14. Initialization and Event Listeners
-        // =========================================================
-
         function initEventListeners() {
-            // Main Timer Controls
-            startPauseBtn.addEventListener('click', toggleTimer);
-            nextPeriodBtn.addEventListener('click', nextPeriod);
-            resetTimerBtn.addEventListener('click', resetMainTimer);
-
-            // Score Controls
-            score1PlusBtn.addEventListener('click', () => adjustScore(1, 1));
-            score1MinusBtn.addEventListener('click', () => adjustScore(1, -1));
-            score2PlusBtn.addEventListener('click', () => adjustScore(2, 1));
-            score2MinusBtn.addEventListener('click', () => adjustScore(2, -1));
-
-            // Timeout Buttons
-            timeout1Btn.addEventListener('click', () => registerTimeout(1));
-            timeout2Btn.addEventListener('click', () => registerTimeout(2));
-
-            // Sanction Buttons
-            document.getElementById('yellowCard1').addEventListener('click', () => openPlayerModal(1, 'yellow'));
-            document.getElementById('twoMinExclusion1').addEventListener('click', () => openPlayerModal(1, 'two_min'));
-            document.getElementById('redCard1').addEventListener('click', () => openPlayerModal(1, 'red'));
-            document.getElementById('blueCard1').addEventListener('click', () => openPlayerModal(1, 'blue'));
-
-            document.getElementById('yellowCard2').addEventListener('click', () => openPlayerModal(2, 'yellow'));
-            document.getElementById('twoMinExclusion2').addEventListener('click', () => openPlayerModal(2, 'two_min'));
-            document.getElementById('redCard2').addEventListener('click', () => openPlayerModal(2, 'red'));
-            document.getElementById('blueCard2').addEventListener('click', () => openPlayerModal(2, 'blue'));
-
-            // Player Modal sanction buttons
-            yellowCardBtn.addEventListener('click', () => applySanction('yellow'));
-            twoMinBtn.addEventListener('click', () => applySanction('two_min'));
-            redCardBtn.addEventListener('click', () => applySanction('red'));
-            blueCardBtn.addEventListener('click', () => applySanction('blue'));
-
-            // Reset Modal
-            resetMatchBtn.addEventListener('click', () => openModal(resetModal));
-            saveAndResetBtn.addEventListener('click', () => {
-                saveJournal(); // Save journal first
-                clearSavedGameState(); // Clear saved state
-                resetGame(); // Then reset the game
-                closeModal(resetModal);
-            });
-            resetWithoutSaveBtn.addEventListener('click', () => {
-                if (confirm('Êtes-vous sûr de vouloir réinitialiser le match SANS sauvegarder le journal ?')) {
-                    clearSavedGameState(); // Clear saved state
-                    resetGame(); // Then reset the game
-                    closeModal(resetModal);
+            // Main Timer and Overlays
+            document.getElementById('mainTimer').addEventListener('click', toggleTimer);
+            document.getElementById('overlayTimerDisplay').addEventListener('click', () => {
+                // Allows interrupting pause by clicking the overlay (only if it's a break and not a timeout)
+                if (gameState.period % 2 === 0 && !gameState.isTimeOutActive && gameState.period < (2 * gameState.numberOfPeriods)) {
+                    const confirmInterruption = confirm("Es-tu sûr de vouloir interrompre la pause et démarrer la prochaine période ?");
+                    if (confirmInterruption) {
+                        gameState.period++; // Move to next playing period
+                        gameState.breakTimer = 0; 
+                        gameState.mainTimer = 0; 
+                        gameState.isRunning = false; // Prevents auto-restart
+                        clearInterval(timerInterval); 
+                        vibrate(200);
+                        addToJournal(`Pause interrompue - Début de la ${(gameState.period + 1) / 2}ème période`);
+                        updateDisplay();
+                    }
+                } else if (gameState.isTimeOutActive) { // Handle Time Out interruption
+                    const confirmInterruption = confirm("Es-tu sûr de vouloir interrompre le temps mort ?");
+                    if (confirmInterruption) {
+                        clearInterval(timeOutInterval);
+                        gameState.isTimeOutActive = false;
+                        vibrate(150);
+                        addToJournal('Temps mort interrompu manuellement.'); // Journal entry for manual interruption
+                        // REMOVED: startTimer(); // Main timer must be resumed manually
+                        updateDisplay();
+                    }
                 }
             });
 
-            // Journal Modal
-            openJournalModalBtn.addEventListener('click', () => openModal(journalModal));
-            saveJournalBtn.addEventListener('click', saveJournal);
-            clearJournalBtn.addEventListener('click', clearJournal);
+            // Team Names (to open player modal)
+            document.getElementById('team1Name').addEventListener('click', (e) => openPlayerModal(parseInt(e.target.dataset.teamId)));
+            document.getElementById('team2Name').addEventListener('click', (e) => openPlayerModal(parseInt(e.target.dataset.teamId)));
 
-            // Settings Modal
-            openSettingsModalBtn.addEventListener('click', () => openModal(settingsModal));
-            saveSettingsBtn.addEventListener('click', saveSettings);
-            team1NameDisplay.addEventListener('click', () => openModal(settingsModal)); // Click team name to open settings
-            team2NameDisplay.addEventListener('click', () => openModal(settingsModal)); // Click team name to open settings
-
-
-            // Full Screen
-            fullScreenBtn.addEventListener('click', toggleFullScreen);
-
-            // Close modals using the 'x' button or by clicking outside
-            document.querySelectorAll('.close-button').forEach(button => {
+            // Score Buttons
+            document.querySelectorAll('.score-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    closeModal(document.getElementById(e.target.dataset.modal));
+                    const teamId = parseInt(e.target.dataset.teamId);
+                    const change = parseInt(e.target.dataset.scoreChange);
+                    changeScore(teamId, change);
                 });
             });
-            document.getElementById('closeSettingsModalBtn').addEventListener('click', closeModal); // Special close for settings modal
+
+            // Time Out Buttons
+            document.getElementById('team1TimeOutBtn').addEventListener('click', (e) => requestTimeOut(parseInt(e.target.dataset.teamId)));
+            document.getElementById('team2TimeOutBtn').addEventListener('click', (e) => requestTimeOut(parseInt(e.target.dataset.teamId)));
+
+            // Bottom Navigation Buttons
+            document.getElementById('journalBtn').addEventListener('click', openJournalModal);
+            document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+            document.getElementById('fullScreenBtn').addEventListener('click', toggleFullScreen); 
+            document.getElementById('resetBtn').addEventListener('click', showResetModal);
+
+            // Reset Modal Buttons
+            document.getElementById('saveBeforeResetBtn').addEventListener('click', saveBeforeReset);
+            document.getElementById('confirmResetBtn').addEventListener('click', confirmReset);
+            document.getElementById('cancelResetBtn').addEventListener('click', closeModal);
+
+            // Player Modal Buttons
+            document.getElementById('yellowCardBtn').addEventListener('click', giveYellowCard);
+            document.getElementById('exclusionBtn').addEventListener('click', giveExclusion);
+            document.getElementById('redCardBtn').addEventListener('click', giveRedCard);
+            document.getElementById('blueCardBtn').addEventListener('click', giveBlueCard); 
+            document.getElementById('closePlayerModalBtn').addEventListener('click', closeModal);
+
+            // Journal Modal Buttons
+            document.getElementById('saveJournalBtn').addEventListener('click', saveJournal);
+            document.getElementById('closeJournalModalBtn').addEventListener('click', closeModal);
+
+            // Settings Modal Buttons
+            document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+            document.getElementById('closeSettingsModalBtn').addEventListener('click', closeModal);
 
             // Close modals when clicking outside
             window.addEventListener('click', (e) => {
@@ -1852,43 +1718,16 @@
                     closeModal();
                 }
             });
-
-            // Handle Wake Lock when page visibility changes
-            document.addEventListener('visibilitychange', () => {
-                if (wakeLock !== null && document.visibilityState === 'visible') {
-                    requestWakeLock(); // Re-request Wake Lock if we come back to the page
-                } else if (document.visibilityState === 'hidden') {
-                    releaseWakeLock(); // Release Wake Lock if the page is hidden
-                }
-            });
-
-            // Release Wake Lock before the page unloads
-            window.addEventListener('beforeunload', () => {
-                releaseWakeLock();
-            });
         }
 
         // =========================================================
-        // 15. Initialization on DOM Load & PWA Registration
+        // 10. Initialization on DOM Load & PWA Registration (NEW)
         // =========================================================
         document.addEventListener('DOMContentLoaded', () => {
             initEventListeners();
-            if (!loadGameState()) { // Try to load saved state, if not successful, initialize defaults
-                // Initialize default settings if no saved state
-                loadSettingsIntoModal(); 
-                // Set initial names & colors
-                gameState.team1.name = team1NameSetting.value;
-                gameState.team1.color = team1ColorSetting.value;
-                gameState.team2.name = team2NameSetting.value;
-                gameState.team2.color = team2ColorSetting.value;
-                addToJournal('Début du match'); // Only add if starting fresh
-            } else {
-                 // If loaded, ensure settings modal fields reflect loaded state
-                loadSettingsIntoModal();
-            }
             updateTeamColorsDisplay(); 
+            addToJournal('Début du match'); 
             updateDisplay();
-
 
             // PWA Service Worker Registration
             if ('serviceWorker' in navigator) {
@@ -1896,14 +1735,37 @@
                     navigator.serviceWorker.register('/service-worker.js')
                         .then(registration => {
                             console.log('Service Worker enregistré avec succès:', registration.scope);
-                            // Demander le Wake Lock une fois le Service Worker enregistré et la page chargée
-                            requestWakeLock(); 
                         })
                         .catch(error => {
                             console.log('Échec de l\'enregistrement du Service Worker:', error);
                         });
                 });
             }
+
+        // =========================================================
+        // 11. Wake Lock API (NEW)
+        // =========================================================
+        async function requestWakeLock() {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    wakeLock.addEventListener('release', () => {
+                        console.log('Wake Lock released');
+                    });
+                    console.log('Wake Lock acquired!');
+                } catch (err) {
+                    console.error(`${err.name}, ${err.message}`);
+                }
+            }
+        }
+
+        function releaseWakeLock() {
+            if (wakeLock) {
+                wakeLock.release();
+                wakeLock = null;
+            }
+        }
+
         });
     </script>
 </body>
