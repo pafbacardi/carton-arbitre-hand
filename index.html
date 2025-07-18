@@ -1742,29 +1742,39 @@
                 });
             }
 
-        // =========================================================
-        // 11. Wake Lock API (NEW)
-        // =========================================================
-        async function requestWakeLock() {
-            if ('wakeLock' in navigator) {
-                try {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                    wakeLock.addEventListener('release', () => {
-                        console.log('Wake Lock released');
-                    });
-                    console.log('Wake Lock acquired!');
-                } catch (err) {
-                    console.error(`${err.name}, ${err.message}`);
-                }
-            }
-        }
+   
 
-        function releaseWakeLock() {
-            if (wakeLock) {
-                wakeLock.release();
-                wakeLock = null;
-            }
-        }
+  let wakeLock = null;
+
+  async function requestWakeLock() {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      console.log('🔒 Wake Lock activé');
+
+      wakeLock.addEventListener('release', () => {
+        console.log('🔓 Wake Lock relâché');
+      });
+    } catch (err) {
+      console.error(`Erreur lors de la demande de Wake Lock : ${err.name}, ${err.message}`);
+    }
+  }
+
+  // Re-demande le Wake Lock si la page devient visible à nouveau
+  document.addEventListener('visibilitychange', () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') {
+      requestWakeLock();
+    }
+  });
+
+  // Demande le Wake Lock au chargement de la page
+  window.addEventListener('load', () => {
+    if ('wakeLock' in navigator) {
+      requestWakeLock();
+    } else {
+      console.warn('Wake Lock API non supportée sur ce navigateur.');
+    }
+  });
+
 
         });
     </script>
